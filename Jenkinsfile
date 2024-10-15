@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
     
@@ -5,7 +6,7 @@ pipeline {
         stage('Checkout from Git') {
             steps {
                 echo 'Pulling from Git'
-                git branch: 'mustaphaa', url: 'https://github.com/ismailgharnougui/Devops.git'
+                git branch: 'mustaphaa', url: 'https://github.com/ismailgharnougui/Devops'
             }
         }
         
@@ -15,13 +16,12 @@ pipeline {
             }
         }
 
-  stage('Deploy to Nexus') {
+        stage('Deploy to Nexus') {
             steps {
                 echo 'Deploying to Nexus...'
                 // Run mvn deploy and skip tests
                 sh 'mvn deploy -DskipTests'
             }
-        
-        // You can add more stages for building, testing, and deploying
-    }
+        } // Close the Deploy to Nexus stage
+    } // Close the stages block
 }
