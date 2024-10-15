@@ -21,6 +21,6 @@ pipeline {
                 // Run mvn deploy and skip tests
                 sh 'mvn deploy -DskipTests'
             }
-        } // Close the Deploy to Nexus stage
-    } // Close the stages block
+        } 
+    } 
 }
