@@ -15,14 +15,12 @@ pipeline {
             }
         }
 
-  stage('Deploy to Nexus') {
+        stage('Deploy to Nexus') {
             steps {
                 echo 'Deploying to Nexus...'
                 // Run mvn deploy and skip tests
                 sh 'mvn deploy -DskipTests'
             }
-        
-        // You can add more stages for building, testing, and deploying
-    }
+        } // Close the Deploy to Nexus stage
+    } // Close the stages block
 }
-
