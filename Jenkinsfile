@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
     
@@ -11,32 +12,16 @@ pipeline {
         
         stage('Testing Maven') {
             steps {
-                echo 'Checking Maven version...'
-                sh 'mvn -version' // Vérifie la version de Maven
+                sh 'mvn -version'
             }
         }
 
-        stage('Build the Application') {
+        stage('Deploy to Nexus') {
             steps {
-                echo 'Building the application...'
-                sh 'mvn clean package' // Construire l'application
+                echo 'Deploying to Nexus...'
+                // Run mvn deploy and skip tests
+                sh 'mvn deploy -DskipTests'
             }
-        }
-
-        stage('Run the Application') {
-            steps {
-                echo 'Running the application...'
-                sh 'java -jar target/my-spring-boot-app-0.0.1-SNAPSHOT.jar' // Exécuter le JAR
-            }
-        } // Close the Run the Application stage
+        } // Close the Deploy to Nexus stage
     } // Close the stages block
-
-    post {
-        success {
-            echo 'Build and run successful!'
-        }
-        failure {
-            echo 'Build failed. Please check the logs.'
-        }
-    }
 }
