@@ -19,7 +19,7 @@ pipeline {
             steps {
                 echo 'Deploying to Nexus...'
                 // Run mvn deploy and skip tests
-                sh 'mvn deploy -DskipTests -x'
+                sh 'mvn deploy -DskipTests -X'
             }
         } 
     } 
