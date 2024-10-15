@@ -19,7 +19,7 @@ pipeline {
         stage('Build Maven Project') {
             steps {
                 echo 'Building Maven project...'
-                sh 'mvn clean install -e -X'
+                sh 'mvn clean install -e -X' // Keeping your local build command
             }
         }
 
