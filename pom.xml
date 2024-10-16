@@ -15,36 +15,33 @@
     <name>kaddem</name>
     <description>kaddem</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version> <!-- Update to Java 11 -->
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>2.7.5</version> <!-- Specify version -->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.7.5</version> <!-- Specify version -->
         </dependency>
         <dependency>
-            <groupId>mysql</groupId> <!-- Updated group ID -->
+            <groupId>mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
-            <version>8.0.30</version> <!-- Specify version -->
+            <version>8.0.33</version> <!-- Use a compatible version -->
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-            <version>1.18.20</version> <!-- Specify version -->
+            <version>1.18.20</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <version>2.7.5</version> <!-- Specify version -->
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -54,6 +51,15 @@
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -68,7 +74,6 @@
             </plugin>
         </plugins>
     </build>
-    <!-- Deploy to Nexus -->
     <distributionManagement>
         <repository>
             <id>deploymentRepo</id>
