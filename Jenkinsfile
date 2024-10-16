@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
     
@@ -11,7 +12,6 @@ pipeline {
         
         stage('Testing Maven') {
             steps {
-                echo 'Checking Maven version'
                 sh 'mvn -version'
             }
         }
@@ -19,19 +19,9 @@ pipeline {
         stage('Deploy to Nexus') {
             steps {
                 echo 'Deploying to Nexus...'
-                // Exécuter la commande mvn deploy et ignorer les tests
-                // Le dépôt cible "deploymentRepo" doit correspondre à l'id du repository dans le pom.xml
-                withCredentials([usernamePassword(credentialsId: 'nexus-credentials', 
-                                                 usernameVariable: 'admin', 
-                                                 passwordVariable: 'mustapha')]) {
-                    sh """
-                        mvn deploy -DskipTests \
-                            -DaltDeploymentRepository=deploymentRepo::default::http://localhost:8081/repository/maven-releases/ \
-                            -Dnexus.username=$USERNAME \
-                            -Dnexus.password=$PASSWORD
-                    """
-                }
+                // Run mvn deploy and skip tests
+                sh 'mvn deploy -DskipTests'
             }
-        } // Fin du stage Deploy to Nexus
-    } // Fin du block stages
+        } // Close the Deploy to Nexus stage
+    } // Close the stages block
 }
