@@ -26,9 +26,16 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube Analysis'
-                // Assuming SonarQube is configured
-                withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar'
+                // Define the Maven tool
+                def mvn = tool 'Default Maven'  // Ensure this matches the name of your Maven tool in Jenkins
+                // Perform SonarQube analysis
+                withSonarQubeEnv('SonarQube') {  // Ensure 'SonarQube' matches your Jenkins SonarQube instance
+                    sh "${mvn}/bin/mvn clean verify sonar:sonar \
+                        -Dsonar.projectKey=Devops \
+                        -Dsonar.projectName='Devops' \
+                        -Dsonar.branch.name=Mariem \
+                        -Dsonar.host.url=http://192.168.230.140:9000 \
+                        -Dsonar.login=Mariem-roken"
                 }
             }
         }
