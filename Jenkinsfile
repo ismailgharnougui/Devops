@@ -30,8 +30,8 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 //echo 'Running SonarQube Analysis'
-                withSonarQubeEnv('SonarQube-Server') {  // Utilisez le nom "SonarQube-Server"
-                        sh 'mvn sonar:sonar sh 'mvn sonar:sonar -Dsonar.projectKey=Devops-Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
+                withSonarQubeEnv('SonarQube-Server') { 
+                        sh 'mvn sonar:sonar -Dsonar.projectKey=Devops-Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
 
                
                 }
