@@ -25,11 +25,9 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                echo 'Running SonarQube Analysis'
-                echo 'Running SonarQube Analysis'
-                // Assuming SonarQube is configured
-                withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar'
+                //echo 'Running SonarQube Analysis'
+                withSonarQubeEnv('SonarQube-Server') {  // Utilisez le nom "SonarQube-Server"
+                        sh 'mvn sonar:sonar -Dsonar.projectKey=Devops -Dsonar.host.url=http://192.168.230.140:9000/tutorials?id=Devops -Dsonar.login=sonar'
                
                 }
             }
