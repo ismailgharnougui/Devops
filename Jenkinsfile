@@ -1,8 +1,13 @@
-
-
 pipeline {
     agent any
     
+    environment {
+        MAVEN_HOME = 'opt/apache-maven-3.6.3' // Remplacez par le chemin d'installation de Maven si nécessaire
+        NEXUS_URL = 'http://172.17.0.2:8081/repository/maven-releases/' // Remplacez par l'URL de votre dépôt Nexus
+        NEXUS_USERNAME = 'admin' // Nom d'utilisateur Nexus
+        NEXUS_PASSWORD = 'mustapha' // Mot de passe Nexus
+    }
+
     stages {
         stage('Checkout from Git') {
             steps {
@@ -11,33 +16,29 @@ pipeline {
             }
         }
         
-        stage('Maven Clean') {
+        stage('Testing Maven') {
             steps {
-                echo 'Running Maven Clean'
-                sh 'mvn clean'
+                sh "${MAVEN_HOME}/bin/mvn -version"
             }
         }
 
-        stage('Maven Compile') {
+        stage('Build with Maven') {
             steps {
-                echo 'Running Maven Compile'
-                sh 'mvn compile'
-            }
-        }
-
-        
-
-        stage('JUnit/Mockito Tests') {
-            steps {
-                echo 'Running JUnit/Mockito Tests'
-                sh 'mvn test'
+                echo 'Building the project with Maven'
+                sh "${MAVEN_HOME}/bin/mvn clean install -DskipTests"
             }
         }
 
         stage('Deploy to Nexus') {
             steps {
                 echo 'Deploying to Nexus...'
-                sh 'mvn deploy -DskipTests -X'
+                sh """
+                    ${MAVEN_HOME}/bin/mvn deploy \
+                    -DskipTests \
+                    -DaltDeploymentRepository=nexus::default::${NEXUS_URL} \
+                    -Dnexus.username=${NEXUS_USERNAME} \
+                    -Dnexus.password=${NEXUS_PASSWORD}
+                """
             }
         }
     }
