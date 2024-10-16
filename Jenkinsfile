@@ -3,8 +3,8 @@ pipeline {
     stages {
         stage('Checkout from Git') {
             steps {
-                echo 'Pulling from Git'
-                checkout scm
+               echo 'Pulling from Git'
+                git branch: 'Mariem', url: 'https://github.com/ismailgharnougui/Devops'
             }
         }
         stage('Maven Clean') {
