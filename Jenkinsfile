@@ -1,14 +1,13 @@
 pipeline {
     agent any
-    
+
     stages {
-        stage('Checkout from Git') {
+        stage('Checkout SCM') {
             steps {
-                echo 'Pulling from Git'
-                git branch: 'Mariem', url: 'https://github.com/ismailgharnougui/Devops'
+                checkout scm
             }
         }
-        
+
         stage('Maven Clean') {
             steps {
                 echo 'Running Maven Clean'
@@ -26,9 +25,16 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube Analysis'
-                // Assuming SonarQube is configured
+                // Define Maven tool
+                def mvn = tool 'Default Maven'
+                // Perform SonarQube analysis with the token
                 withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar'
+                    sh "${mvn}/bin/mvn clean verify sonar:sonar \
+                        -Dsonar.projectKey=Devops \
+                        -Dsonar.projectName='Devops' \
+                        -Dsonar.branch.name=Mariem \
+                        -Dsonar.host.url=http://192.168.230.140:9000 \
+                        -Dsonar.login=Mariem-token"
                 }
             }
         }
