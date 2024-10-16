@@ -3,6 +3,8 @@ pipeline {
         environment {
         SONAR_HOST_URL = 'http://192.168.230.140:9000/'
         SONAR_LOGIN = credentials('sonar')
+        NEXUS_HOST_URL = 'http://192.168.230.140:8081/'
+        NEXUS_LOGIN = credentials('nexus')
     }
     
     stages {
@@ -59,4 +61,5 @@ pipeline {
             }
         }
     }
+}
 }
