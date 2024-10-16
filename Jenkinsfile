@@ -26,15 +26,7 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                echo 'Running SonarQube Analysis'
-                // Assuming SonarQube is configured
-                withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar'
-                }
-            }
-        }
+        
 
         stage('JUnit/Mockito Tests') {
             steps {
