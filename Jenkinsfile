@@ -19,8 +19,15 @@ pipeline {
         stage('Deploy to Nexus') {
             steps {
                 echo 'Deploying to Nexus...'
-                // Run mvn deploy and skip tests
-                sh 'mvn deploy -DskipTests'
+                withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, usernameVariable: 'admin', passwordVariable: 'mustapha')]) {
+                    sh """
+                        ${MAVEN_HOME}/bin/mvn deploy \
+                        -DskipTests \
+                        -DaltDeploymentRepository=nexus::default::${NEXUS_URL} \
+                        -Dnexus.username=${NEXUS_USERNAME} \
+                        -Dnexus.password=${NEXUS_PASSWORD}
+                    """
+                }
             }
         } // Close the Deploy to Nexus stage
     } // Close the stages block
