@@ -2,7 +2,7 @@ pipeline {
     agent any
         environment {
         SONAR_HOST_URL = 'http://192.168.230.140:9000/'
-        SONAR_LOGIN = credentials('sonar')
+        SONAR_LOGIN = credentials('Mariem-token')
     }
     
     stages {
