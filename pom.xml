@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -8,14 +9,17 @@
         <version>2.7.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>tn.esprit.spring</groupId>
     <artifactId>kaddem</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>kaddem</name>
     <description>kaddem</description>
+
     <properties>
         <java.version>1.8</java.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -25,7 +29,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -46,7 +49,6 @@
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>1.6.9</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -63,9 +65,18 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <!-- SonarQube Maven Plugin -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.9.1.2184</version>
+            </plugin>
+
         </plugins>
     </build>
-          <!-- Deploy to Nexus -->
+
+    <!-- Deploy to Nexus -->
     <distributionManagement>
         <repository>
             <id>deploymentRepo</id>
@@ -74,4 +85,11 @@
         </repository>
     </distributionManagement>
 
+    <!-- SonarQube configuration (optional, can be passed via Jenkins pipeline) -->
+    <properties>
+        <sonar.projectKey>Devops</sonar.projectKey>
+        <sonar.projectName>Devops</sonar.projectName>
+        <sonar.host.url>http://192.168.230.140:9000</sonar.host.url>
+        <sonar.login>Mariem-token</sonar.login> <!-- This is insecure for a shared project, prefer using Jenkins credentials -->
+    </properties>
 </project>
