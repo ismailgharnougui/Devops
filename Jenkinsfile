@@ -1,4 +1,6 @@
 
+Mariem
+Mariem Khamessi
 pipeline {
     agent any
     
@@ -6,29 +8,46 @@ pipeline {
         stage('Checkout from Git') {
             steps {
                 echo 'Pulling from Git'
-                git branch: 'mustaphaa', url: 'https://github.com/ismailgharnougui/Devops'
+                git branch: 'Mariem', url: 'https://github.com/ismailgharnougui/Devops'
             }
         }
         
-        stage('Testing Maven') {
+        stage('Maven Clean') {
             steps {
-                sh 'mvn -version'
+                echo 'Running Maven Clean'
+                sh 'mvn clean'
+            }
+        }
+
+        stage('Maven Compile') {
+            steps {
+                echo 'Running Maven Compile'
+                sh 'mvn compile'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Running SonarQube Analysis'
+                // Assuming SonarQube is configured
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
+
+        stage('JUnit/Mockito Tests') {
+            steps {
+                echo 'Running JUnit/Mockito Tests'
+                sh 'mvn test'
             }
         }
 
         stage('Deploy to Nexus') {
             steps {
                 echo 'Deploying to Nexus...'
-                withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, usernameVariable: 'admin', passwordVariable: 'mustapha')]) {
-                    sh """
-                        ${MAVEN_HOME}/bin/mvn deploy \
-                        -DskipTests \
-                        -DaltDeploymentRepository=nexus::default::${NEXUS_URL} \
-                        -Dnexus.username=${NEXUS_USERNAME} \
-                        -Dnexus.password=${NEXUS_PASSWORD}
-                    """
-                }
+                sh 'mvn deploy -DskipTests -X'
             }
-        } // Close the Deploy to Nexus stage
-    } // Close the stages block
+        }
+    }
 }
