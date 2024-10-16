@@ -30,9 +30,11 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 //echo 'Running SonarQube Analysis'
-                withSonarQubeEnv('SonarQube-Server') { 
-                        sh 'mvn sonar:sonar -Dsonar.projectKey=Devops -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
-                
+                //withSonarQubeEnv('SonarQube-Server') { 
+                        //sh 'mvn sonar:sonar -Dsonar.projectKey=Devops -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
+                def mvn = tool 'Default Maven';
+    withSonarQubeEnv() {
+      sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=Devops -Dsonar.projectName='Devops'"
 
 
                
