@@ -1,6 +1,5 @@
 
-Mariem
-Mariem Khamessi
+
 pipeline {
     agent any
     
@@ -8,7 +7,7 @@ pipeline {
         stage('Checkout from Git') {
             steps {
                 echo 'Pulling from Git'
-                git branch: 'Mariem', url: 'https://github.com/ismailgharnougui/Devops'
+                git branch: 'mustaphaa', url: 'https://github.com/ismailgharnougui/Devops'
             }
         }
         
@@ -39,6 +38,15 @@ pipeline {
             steps {
                 echo 'Deploying to Nexus...'
                 sh 'mvn deploy -DskipTests -X'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Running SonarQube Analysis'
+                // Assuming SonarQube is configured
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn sonar:sonar'
+                }
             }
         }
     }
