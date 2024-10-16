@@ -1,13 +1,14 @@
-pipeline {
-    agent any
-    
-    environment {
-        MAVEN_HOME = 'opt/apache-maven-3.6.3' // Remplacez par le chemin d'installation de Maven si nécessaire
-        NEXUS_URL = 'http://172.17.0.2:8081/repository/maven-releases/' // Remplacez par l'URL de votre dépôt Nexus
-        NEXUS_USERNAME = 'admin' // Nom d'utilisateur Nexus
-        NEXUS_PASSWORD = 'mustapha' // Mot de passe Nexus
-    }
 
+
+    pipeline {
+    agent any
+        environment {
+        SONAR_HOST_URL = 'http://172.17.0.2:9000/'
+        SONAR_LOGIN = credentials('sonar')
+        NEXUS_HOST_URL = 'http://172.17.0.2:8081/'
+        NEXUS_LOGIN = credentials('nexus')
+    }
+    
     stages {
         stage('Checkout from Git') {
             steps {
@@ -16,30 +17,51 @@ pipeline {
             }
         }
         
-        stage('Testing Maven') {
+        stage('Maven Clean') {
             steps {
-                sh "${MAVEN_HOME}/bin/mvn -version"
+                echo 'Running Maven Clean'
+                sh 'mvn clean'
             }
         }
 
-        stage('Build with Maven') {
+        stage('Maven Compile') {
             steps {
-                echo 'Building the project with Maven'
-                sh "${MAVEN_HOME}/bin/mvn clean install -DskipTests"
+                echo 'Running Maven Compile'
+                sh 'mvn compile'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                //echo 'Running SonarQube Analysis'
+                withSonarQubeEnv('SonarQube-Server') { 
+                        sh 'mvn sonar:sonar -Dsonar.projectKey=Devops -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
+            
+
+
+               
+                }
+            }
+        }
+
+        stage('JUnit/Mockito Tests') {
+            steps {
+                echo 'Running JUnit/Mockito Tests'
+                sh 'mvn test'
             }
         }
 
         stage('Deploy to Nexus') {
             steps {
                 echo 'Deploying to Nexus...'
-                sh """
-                    ${MAVEN_HOME}/bin/mvn deploy \
-                    -DskipTests \
-                    -DaltDeploymentRepository=nexus::default::${NEXUS_URL} \
-                    -Dnexus.username=${NEXUS_USERNAME} \
-                    -Dnexus.password=${NEXUS_PASSWORD}
-                """
+                //sh 'mvn deploy -DskipTests -X'
+               
+        // Use the withCredentials block to inject the Nexus credentials
+         withCredentials([usernamePassword(credentialsId: 'nexus', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+            // Execute the Maven deploy command
+            sh 'mvn deploy -DskipTests -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD'
             }
         }
     }
+}
 }
