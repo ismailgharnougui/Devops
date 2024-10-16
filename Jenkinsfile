@@ -26,7 +26,7 @@ pipeline {
             steps {
                 echo 'Running SonarQube Analysis'
                 // Define Maven tool
-                def mvn = tool 'Default Maven'
+                def mvn = tool 'Maven 3.6.3'
                 // Perform SonarQube analysis with the token
                 withSonarQubeEnv('SonarQube') {
                     sh "${mvn}/bin/mvn clean verify sonar:sonar \
