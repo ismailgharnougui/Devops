@@ -50,7 +50,12 @@ pipeline {
         stage('Deploy to Nexus') {
             steps {
                 echo 'Deploying to Nexus...'
-                sh 'mvn deploy -DskipTests -X'
+                //sh 'mvn deploy -DskipTests -X'
+               
+        // Use the withCredentials block to inject the Nexus credentials
+        withCredentials([usernamePassword(credentialsId: 'nexus', passwordVariable: 'Mariempro123?', usernameVariable: 'admin')]) {
+            // Execute the Maven deploy command
+            sh 'mvn deploy -DskipTests -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD'
             }
         }
     }
