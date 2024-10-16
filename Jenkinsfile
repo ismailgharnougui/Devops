@@ -34,7 +34,7 @@ pipeline {
                         -Dsonar.projectKey=Devops \
                         -Dsonar.projectName='Devops' \
                         -Dsonar.branch.name=Mariem \
-                        -Dsonar.host.url=http://192.168.230.140:9000 \
+                        -Dsonar.host.url=http://192.168.230.140:9000/tutorials?id=Devops\
                         -Dsonar.login=Mariem-roken"
                 }
             }
