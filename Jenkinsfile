@@ -1,10 +1,8 @@
 pipeline {
     agent any
-        environment {
+    environment {
         SONAR_HOST_URL = 'http://172.17.0.3:9000/'
         SONAR_LOGIN = credentials('sonar1')
-        NEXUS_HOST_URL = 'http://172.17.0.2:8081/'
-        NEXUS_LOGIN = credentials('nexus')
     }
     
     stages {
@@ -31,13 +29,9 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                //echo 'Running SonarQube Analysis'
+                echo 'Running SonarQube Analysis'
                 withSonarQubeEnv('SonarQube') { 
-                        sh 'mvn sonar:sonar -Dsonar.projectKey=Devops -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
-            
-
-
-               
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=Devops -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
                 }
             }
         }
@@ -48,18 +42,6 @@ pipeline {
                 sh 'mvn test'
             }
         }
-
-        stage('Deploy to Nexus') {
-            steps {
-                echo 'Deploying to Nexus...'
-                //sh 'mvn deploy -DskipTests -X'
-               
-        // Use the withCredentials block to inject the Nexus credentials
-         withCredentials([usernamePassword(credentialsId: 'nexus', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
-            // Execute the Maven deploy command
-            sh 'mvn deploy -DskipTests -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD'
-            }
-        }
     }
 }
-}
+
