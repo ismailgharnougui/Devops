@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout from Git') {
             steps {
                 echo 'Pulling from Git'
-                git branch: 'mustaphaa', url: 'https://github.com/ismailgharnougui/Devops'
+                git branch: 'Mariem', url: 'https://github.com/ismailgharnougui/Devops'
             }
         }
         
@@ -32,7 +32,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 //echo 'Running SonarQube Analysis'
-                withSonarQubeEnv('SonarQube') { 
+                withSonarQubeEnv('SonarQube-Server') { 
                         sh 'mvn sonar:sonar -Dsonar.projectKey=Devops -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
             
 
