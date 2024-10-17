@@ -27,10 +27,10 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('SonarQube-Server Analysis') {
             steps {
                 echo 'Running SonarQube Analysis'
-                withSonarQubeEnv('SonarQube-Server') { 
+                withSonarQubeEnv('SonarQube') { 
                     sh 'mvn sonar1:sonar1 -Dsonar.projectKey=Devops -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
                 }
             }
