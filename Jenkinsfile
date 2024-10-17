@@ -2,7 +2,7 @@ pipeline {
     agent any
         environment {
         SONAR_HOST_URL = 'http://172.17.0.3:9000/'
-        SONAR_LOGIN = credentials('sonarrr')
+        SONAR_LOGIN = credentials('sonar1')
         NEXUS_HOST_URL = 'http://172.17.0.2:8081/'
         NEXUS_LOGIN = credentials('nexus')
     }
@@ -32,7 +32,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 //echo 'Running SonarQube Analysis'
-                withSonarQubeEnv('SonarQube-Server') { 
+                withSonarQubeEnv('SonarQube') { 
                         sh 'mvn sonar:sonar -Dsonar.projectKey=Devops -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
             
 
