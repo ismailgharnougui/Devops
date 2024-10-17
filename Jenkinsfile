@@ -4,7 +4,7 @@
     agent any
         environment {
         SONAR_HOST_URL = 'http://172.17.0.2:9000/'
-        SONAR_LOGIN = credentials('sonar')
+        SONAR_LOGIN = credentials('sonarr')
         NEXUS_HOST_URL = 'http://172.17.0.2:8081/'
         NEXUS_LOGIN = credentials('nexus')
     }
