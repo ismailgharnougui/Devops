@@ -27,7 +27,7 @@ pipeline {
             }
         }
 
-        stage('SonarQube-Server Analysis') {
+        stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube Analysis'
                 withSonarQubeEnv('SonarQube') { 
