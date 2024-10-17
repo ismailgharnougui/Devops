@@ -22,12 +22,6 @@ pipeline {
             }
         }
 
-       stage('Maven Compile') {
-            steps {
-                echo 'Running Maven Compile'
-                sh 'mvn compile'
-            }
-        }
 
         stage('SonarQube Analysis') {
             steps {
