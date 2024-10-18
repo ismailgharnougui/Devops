@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout from Git') {
             steps {
                 echo 'Pulling from Git'
-                git branch: 'Aziz-Hannachi', url: 'https://github.com/ismailgharnougui/Devops'
+                git branch: 'azizz-hannachi', url: 'https://github.com/ismailgharnougui/Devops'
             }
         }
         
