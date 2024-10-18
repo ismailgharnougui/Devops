@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         SONAR_HOST_URL = 'http://172.17.0.1:9000/'
-        SONAR_LOGIN = credentials('admin')
+        SONAR_LOGIN = credentials('Sonarqube')
     }
     
     stages {
