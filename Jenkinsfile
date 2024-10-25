@@ -4,7 +4,6 @@ pipeline {
         SONAR_HOST_URL = 'http://172.17.0.1:9000/'
         SONAR_LOGIN = credentials('Sonarqube')
     }
-    
     stages {
         stage('Checkout from Git') {
             steps {
@@ -42,6 +41,12 @@ pipeline {
                 sh 'mvn test'
             }
         }
+        
+        stage('Nexus Deployment') {
+            steps {
+                echo 'Deploying to Nexus'
+                sh 'mvn deploy'
+            }
+        }
     }
 }
-/* .alo.. */ 
