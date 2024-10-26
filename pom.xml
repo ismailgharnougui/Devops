@@ -49,17 +49,17 @@
     </dependencies>
 
     <!-- Corrected distributionManagement section -->
-    <distributionManagement>
-        <repository>
-            <id>deploymentRepo</id>
-            <name>Nexus Repository</name>
-            <url>http://localhost:8081/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>deploymentSnapshotRepo</id>
-            <url>http://localhost:8081/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+   <distributionManagement>
+    <repository>
+        <id>deploymentRepo</id> <!-- Utilisez le même ID que dans settings.xml -->
+        <url>http://localhost:8081/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+        <id>deploymentRepo</id> <!-- Utilisez également le même ID ici -->
+        <url>http://localhost:8081/repository/maven-snapshots/</url>
+    </snapshotRepository>
+</distributionManagement>
+
 
     <build>
         <plugins>
