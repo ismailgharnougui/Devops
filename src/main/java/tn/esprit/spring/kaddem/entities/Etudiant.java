@@ -92,6 +92,7 @@ public class Etudiant implements Serializable{
     public void setNomE(String nomE) {
         this.nomE = nomE;
     }
+
     public String getPrenomE() {
         return prenomE;
     }

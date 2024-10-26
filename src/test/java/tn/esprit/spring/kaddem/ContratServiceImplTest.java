@@ -78,8 +78,8 @@ public class ContratServiceImplTest {
     @Test
     public void testAffectContratToEtudiant() {
         Etudiant etudiant = new Etudiant();
-        etudiant.setNom("Dupont");
-        etudiant.setPrenom("Jean");
+        etudiant.setNomE("Dupont");
+        etudiant.setPrenomE("Jean");
         etudiant.setContrats(new HashSet<>());
 
         Contrat contrat = new Contrat(1, new Date(), new Date(), Specialite.CLOUD, false, 3000);
