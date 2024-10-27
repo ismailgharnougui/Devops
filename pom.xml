@@ -13,10 +13,22 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>kaddem</name>
     <description>kaddem</description>
-    <properties>
+      <properties>
         <java.version>1.8</java.version>
+        <springdoc.version>1.6.9</springdoc.version>
+        <sonar.maven.plugin.version>4.0.0.4121</sonar.maven.plugin.version>
+        <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
+        <sonar.projectKey>tn.esprit.spring:kaddem</sonar.projectKey>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.language>java</sonar.language>
     </properties>
     <dependencies>
+             <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.11</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -73,17 +85,48 @@
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>4.0.0.4121</version> <!-- Use the latest stable version -->
             </plugin>
+                 
         </plugins>
+             <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.11</version>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+<plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar.maven.plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <useSystemClassLoader>false</useSystemClassLoader>
+                </configuration>
+            </plugin>
     </build>
     <!-- Deploy to Nexus -->
-<distributionManagement>
-    <repository>
-        <id>nexus-releases</id>
-        <url>http://localhost:8081/repository/maven-releases/</url>
-    </repository>
-    <snapshotRepository>
-        <id>nexus-snapshots</id>
-        <url>http://localhost:8081/repository/maven-snapshots/</url>
-    </snapshotRepository>
-</distributionManagement>
+ <distributionManagement>
+        <repository>
+            <id>deploymentRepo</id>
+            <name>Nexus Repository</name>
+            <url>http://localhost:8081/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
 </project>
