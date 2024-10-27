@@ -8,27 +8,23 @@
         <version>2.7.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    
     <groupId>tn.esprit.spring</groupId>
     <artifactId>kaddem</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>kaddem</name>
     <description>kaddem</description>
-      <properties>
+
+    <properties>
         <java.version>1.8</java.version>
         <springdoc.version>1.6.9</springdoc.version>
         <sonar.maven.plugin.version>4.0.0.4121</sonar.maven.plugin.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
         <sonar.projectKey>tn.esprit.spring:kaddem</sonar.projectKey>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.language>java</sonar.language>
     </properties>
+
     <dependencies>
-             <dependency>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.11</version>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -37,12 +33,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-         <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.13.2</version>
-        <scope>test</scope>
-             </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -61,9 +57,8 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.9</version>
+            <version>${springdoc.version}</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -80,14 +75,14 @@
                     </excludes>
                 </configuration>
             </plugin>
-                 <plugin>
+
+            <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>4.0.0.4121</version> <!-- Use the latest stable version -->
+                <version>${sonar.maven.plugin.version}</version>
             </plugin>
-                 
-        </plugins>
-             <plugin>
+            
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.11</version>
@@ -107,11 +102,7 @@
                     </execution>
                 </executions>
             </plugin>
-<plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>${sonar.maven.plugin.version}</version>
-            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -120,9 +111,11 @@
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
+        </plugins>
     </build>
+
     <!-- Deploy to Nexus -->
- <distributionManagement>
+    <distributionManagement>
         <repository>
             <id>deploymentRepo</id>
             <name>Nexus Repository</name>
