@@ -4,7 +4,7 @@ pipeline {
         SONAR_HOST_URL = 'http://192.168.230.140:9000/'
         SONAR_LOGIN = credentials('sonar')
         NEXUS_HOST_URL = 'http://192.168.230.140:8081/'
-        NEXUS_LOGIN = credentials('nexus')
+        NEXUS_LOGIN = credentials('deploymentRepo')
     }
     
     stages {
@@ -55,7 +55,7 @@ pipeline {
                 //sh 'mvn deploy -DskipTests -X'
                
         // Use the withCredentials block to inject the Nexus credentials
-         withCredentials([usernamePassword(credentialsId: 'nexus', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+         withCredentials([usernamePassword(credentialsId: 'deploymentRepo', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
             // Execute the Maven deploy command
             sh 'mvn deploy -DskipTests -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD'
             }
