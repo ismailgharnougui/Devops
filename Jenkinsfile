@@ -57,7 +57,12 @@ pipeline {
         // Use the withCredentials block to inject the Nexus credentials
          withCredentials([usernamePassword(credentialsId: 'deploymentRepo', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
             // Execute the Maven deploy command
-            sh 'mvn deploy -DskipTests -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD'
+            //sh 'mvn deploy -DskipTests -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD'
+              sh '''
+                mvn deploy -DskipTests -DaltDeploymentRepository=deploymentRepo::default::${NEXUS_HOST_URL}repository/deploymentRepo/ \
+                    -Dnexus.username=$NEXUS_USERNAME \
+                    -Dnexus.password=$NEXUS_PASSWORD
+                     '''
             }
         }
     }
