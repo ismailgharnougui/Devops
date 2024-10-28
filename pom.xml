@@ -75,7 +75,7 @@
         <repository>
             <id>deploymentRepo</id>
             <name>Nexus Repository</name>
-            <url>http://10.0.2.15:8081/repository/deploymentRepo/</url>
+            <url>http://10.0.2.15:8081/repository/DeploymentRepository/</url>
         </repository>
     </distributionManagement>
 
