@@ -15,6 +15,13 @@
     <description>kaddem</description>
     <properties>
         <java.version>1.8</java.version>
+        <springdoc.version>1.6.9</springdoc.version>
+        <sonar.maven.plugin.version>4.0.0.4121</sonar.maven.plugin.version>
+        <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
+        <sonar.projectKey>tn.esprit.spring:kaddem</sonar.projectKey>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.language>java</sonar.language>
     </properties>
     <dependencies>
         <dependency>
