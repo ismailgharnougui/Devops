@@ -119,6 +119,7 @@ public class EtudiantServiceImplTest {
         assertEquals(etudiant, contrat.getEtudiant());
         assertTrue(equipe.getEtudiants().contains(etudiant));
     }
+  
 
     @Test
     public void testGetEtudiantsByDepartement() {
