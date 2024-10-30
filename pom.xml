@@ -77,11 +77,7 @@
             <name>Nexus Repository</name>
             <url>http://192.168.230.140:8081/repository/deploymentRepo/</url>
         </repository>
-        <snapshotRepository>
-        <id>deploymentRepo</id>
-        <name>Nexus Snapshot Repository</name>
-        <url>http://192.168.230.140:8081/repository/deploymentRepo/</url>
-        </snapshotRepository>
+        
     </distributionManagement>
 
 </project>
