@@ -113,8 +113,8 @@ public class EtudiantServiceImplTest {
         Contrat contrat = new Contrat();
         Equipe equipe = new Equipe();
         equipe.setEtudiants(new HashSet<>());
-        Contrat contrat = new Contrat(1, new Date(), new Date(), Specialite.CLOUD, false, 3000);
-        Equipe equipe = new equipe(2,"Team", Niveau.JUNIOR);
+        //Contrat contrat = new Contrat(1, new Date(), new Date(), Specialite.CLOUD, false, 3000);
+        //Equipe equipe = new equipe(2,"Team", Niveau.JUNIOR);
 
         when(contratRepository.findById(1)).thenReturn(Optional.of(contrat));
         when(equipeRepository.findById(2)).thenReturn(Optional.of(equipe));
