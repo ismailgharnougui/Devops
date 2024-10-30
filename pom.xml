@@ -11,6 +11,7 @@
     <groupId>tn.esprit.spring</groupId>
     <artifactId>kaddem</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>     
     <name>kaddem</name>
     <description>kaddem</description>
     <properties>
