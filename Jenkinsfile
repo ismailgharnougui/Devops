@@ -28,6 +28,12 @@ pipeline {
                 sh 'mvn compile'
             }
         }
+         stage('Coverage Report') {
+            steps {
+                // Generate the Jacoco coverage report
+                sh '/usr/share/maven/bin/mvn verify'
+            }
+        }
 
         stage('SonarQube Analysis') {
             steps {
@@ -45,7 +51,7 @@ pipeline {
         stage('JUnit/Mockito Tests') {
             steps {
                 echo 'Running JUnit/Mockito Tests'
-                sh 'mvn test'
+                sh 'mvn test jacoco:report'
             }
         }
 
