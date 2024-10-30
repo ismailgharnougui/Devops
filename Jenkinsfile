@@ -4,7 +4,7 @@ pipeline {
         SONAR_HOST_URL = 'http://192.168.230.140:9000/'
         SONAR_LOGIN = credentials('sonar')
         NEXUS_HOST_URL = 'http://192.168.230.140:8081/'
-        NEXUS_LOGIN = credentials('deploymentRepo')
+        NEXUS_LOGIN = credentials('deploymentRepoo')
     }
     
     stages {
@@ -54,7 +54,7 @@ pipeline {
                 echo 'Deploying to Nexus...'
                 //sh 'mvn deploy -DskipTests -X'
          
-         withCredentials([usernamePassword(credentialsId: 'deploymentRepo', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+         withCredentials([usernamePassword(credentialsId: 'deploymentRepoo', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
          
             sh 'mvn deploy -DskipTests -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD'
              
