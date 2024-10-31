@@ -3,6 +3,12 @@ pipeline {
     environment {
         SONAR_HOST_URL = 'http://172.17.0.1:9000/'
         SONAR_LOGIN = credentials('Sonarqube')
+        NEXUS_URL = "http://localhost:8081"
+        NEXUS_REPOSITORY = "maven-releases"
+        NEXUS_GROUP = "tn.esprit.spring"
+        NEXUS_ARTIFACT = "kaddem"
+        NEXUS_VERSION = "0.0.1"
+        NEXUS_CREDENTIALS = "admin:nexus"
     }
     stages {
         stage('Checkout from Git') {
@@ -49,24 +55,28 @@ pipeline {
             }
         }
         
-stage('Nexus Deployment') {
-    steps {
-        script {
-            // Install jq temporarily if not already available
-           // sh 'which jq || apt-get update && apt-get install -y jq'
+ stage('Nexus Deployment') {
+            steps {
+                script {
+                    // Get the component ID using the defined Nexus credentials
+                    def component_id = sh(
+                        script: "curl -u '${NEXUS_CREDENTIALS}' '${NEXUS_URL}/service/rest/v1/components?repository=${NEXUS_REPOSITORY}&group=${NEXUS_GROUP}&name=${NEXUS_ARTIFACT}&version=${NEXUS_VERSION}' | jq -r .items[].id",
+                        returnStdout: true
+                    ).trim()
 
-            // Use jq to get the component ID
-            sh 'curl -u "admin:nexus" "http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1" | jq -r .items[].id'
-            sh '''
-component_id=$(curl -u admin:root "http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1" | jq -r .items[].id)
-echo "Deleting component with ID: $component_id"
-curl -X DELETE -u admin:root "http://localhost:8081/service/rest/v1/components/$component_id"'''
-            // Deploy to Nexus
-            echo 'Deploying to Nexus'
-            sh 'mvn deploy -Dnexus.username=admin -Dnexus.password=nexus'
+                    if (component_id) {
+                        echo "Deleting component with ID: ${component_id}"
+                        sh "curl -X DELETE -u '${NEXUS_CREDENTIALS}' '${NEXUS_URL}/service/rest/v1/components/${component_id}'"
+                    } else {
+                        echo "No component found with version ${NEXUS_VERSION} to delete."
+                    }
+
+                    // Deploy to Nexus with correct credentials
+                    echo 'Deploying to Nexus'
+                    sh "mvn deploy -Dnexus.username=admin -Dnexus.password=nexus"
+                }
+            }
         }
-    }
-}
 
 
     }
