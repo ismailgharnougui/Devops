@@ -48,6 +48,15 @@ pipeline {
                 sh 'mvn test jacoco:report'
             }
         }
+          
+        stage('Nexus Deployment') {
+            steps {
+                echo 'Deploying to Nexus'
+                withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                    sh 'mvn deploy -Dnexus.username=$NEXUS_USERNAME -Dnexus.password=$NEXUS_PASSWORD'
+                }
+            }
+        }
     }
 }
 
