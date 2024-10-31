@@ -53,7 +53,7 @@ stage('Nexus Deployment') {
     steps {
         script {
             // Install jq temporarily if not already available
-            sh 'which jq || sudo apt-get update && sudo apt-get install -y jq'
+            sh 'which jq || apt-get update && apt-get install -y jq'
 
             // Use jq to get the component ID
             def component_id = sh(script: 'curl -u "admin:nexus" "http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1" | jq -r .items[].id', returnStdout: true).trim()
