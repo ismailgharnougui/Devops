@@ -25,12 +25,14 @@ pipeline {
                 sh 'mvn compile'
             }
         }
- stage('Coverage Report') {
+
+        stage('Coverage Report') {
             steps {
                 // Generate the Jacoco coverage report
                 sh '/usr/share/maven/bin/mvn verify'
             }
         }
+        
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube Analysis'
@@ -49,16 +51,22 @@ pipeline {
         
         stage('Nexus Deployment') {
             steps {
-                sh 'curl -u admin:nexus "http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1" | jq .items[].id'
-sh '''
-component_id=$(curl -u admin:nexus "http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1" | jq -r .items[].id)
-echo "Deleting component with ID: $component_id"
-curl -X DELETE -u admin:nexus "http://localhost:8081/service/rest/v1/components/$component_id"
-'''
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                        // Obtenir l'ID du composant existant dans Nexus
+                        def component_id = sh(script: "curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD \"http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1\" | jq -r .items[].id", returnStdout: true).trim()
+                        
+                        if (component_id) {
+                            echo "Deleting component with ID: ${component_id}"
+                            sh "curl -X DELETE -u $NEXUS_USERNAME:$NEXUS_PASSWORD \"http://localhost:8081/service/rest/v1/components/${component_id}\""
+                        } else {
+                            echo "No component found with version 0.0.1 to delete."
+                        }
 
-                echo 'Deploying to Nexus'
-                withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
-                    sh 'mvn deploy -Dnexus.username=$NEXUS_USERNAME -Dnexus.password=$NEXUS_PASSWORD'
+                        // Déploiement vers Nexus
+                        echo 'Deploying to Nexus'
+                        sh 'mvn deploy -Dnexus.username=$NEXUS_USERNAME -Dnexus.password=$NEXUS_PASSWORD'
+                    }
                 }
             }
         }
