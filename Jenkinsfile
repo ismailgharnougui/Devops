@@ -52,8 +52,11 @@ pipeline {
 stage('Nexus Deployment') {
     steps {
         script {
-            // Obtenir l'ID du composant existant dans Nexus sans interpolation Groovy
-            def component_id = sh(script: 'curl -u "admin:nexus" "http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1" | grep -o \'"id":"[^"]*\' | sed \'s/"id":"\\(.*\\)"/\\1/\'', returnStdout: true).trim()
+            // Install jq temporarily if not already available
+            sh 'which jq || sudo apt-get update && sudo apt-get install -y jq'
+
+            // Use jq to get the component ID
+            def component_id = sh(script: 'curl -u "admin:nexus" "http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1" | jq -r .items[].id', returnStdout: true).trim()
             
             if (component_id) {
                 echo "Deleting component with ID: ${component_id}"
@@ -62,7 +65,7 @@ stage('Nexus Deployment') {
                 echo "No component found with version 0.0.1 to delete."
             }
 
-            // Déploiement vers Nexus
+            // Deploy to Nexus
             echo 'Deploying to Nexus'
             sh 'mvn deploy -Dnexus.username=admin -Dnexus.password=nexus'
         }
