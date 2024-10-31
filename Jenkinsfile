@@ -56,7 +56,7 @@ stage('Nexus Deployment') {
            // sh 'which jq || apt-get update && apt-get install -y jq'
 
             // Use jq to get the component ID
-            sh 'curl -u "admin:nexus" "http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1" | | jq -r .items[].id)'
+            sh 'curl -u "admin:nexus" "http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1" | jq -r .items[].id'
             sh '''
 component_id=$(curl -u admin:root "http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1" | jq -r .items[].id)
 echo "Deleting component with ID: $component_id"
