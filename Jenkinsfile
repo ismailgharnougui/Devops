@@ -49,16 +49,16 @@ pipeline {
             }
         }
         
-  stage('Nexus Deployment') {
+stage('Nexus Deployment') {
     steps {
         script {
             withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
-                // Obtenir l'ID du composant existant dans Nexus sans utiliser jq
-                def component_id = sh(script: "curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD \"http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1\" | grep -o '\"id\":\"[^\"]*\"' | sed 's/\"id\":\"\\(.*\\)\"/\\1/'", returnStdout: true).trim()
+                // Obtenir l'ID du composant existant dans Nexus sans interpolation Groovy
+                def component_id = sh(script: 'curl -u "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" "http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1" | grep -o \'"id":"[^"]*\' | sed \'s/"id":"\\(.*\\)"/\\1/\'', returnStdout: true).trim()
                 
                 if (component_id) {
                     echo "Deleting component with ID: ${component_id}"
-                    sh "curl -X DELETE -u $NEXUS_USERNAME:$NEXUS_PASSWORD \"http://localhost:8081/service/rest/v1/components/${component_id}\""
+                    sh 'curl -X DELETE -u "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" "http://localhost:8081/service/rest/v1/components/${component_id}"'
                 } else {
                     echo "No component found with version 0.0.1 to delete."
                 }
