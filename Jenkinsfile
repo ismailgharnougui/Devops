@@ -49,6 +49,13 @@ pipeline {
         
         stage('Nexus Deployment') {
             steps {
+                sh 'curl -u admin:nexus "http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1" | jq .items[].id'
+sh '''
+component_id=$(curl -u admin:nexus "http://localhost:8081/service/rest/v1/components?repository=maven-releases&group=tn.esprit.spring&name=kaddem&version=0.0.1" | jq -r .items[].id)
+echo "Deleting component with ID: $component_id"
+curl -X DELETE -u admin:nexus "http://localhost:8081/service/rest/v1/components/$component_id"
+'''
+
                 echo 'Deploying to Nexus'
                 withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
                     sh 'mvn deploy -Dnexus.username=$NEXUS_USERNAME -Dnexus.password=$NEXUS_PASSWORD'
