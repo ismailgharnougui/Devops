@@ -65,6 +65,12 @@ pipeline {
             }
         }
     }
+          stage('Test Docker Access') {
+            steps {
+                echo 'Testing Docker access...'
+                sh 'docker images'
+            }
+        }
    
           stage('Build Docker Image') {
             steps {
