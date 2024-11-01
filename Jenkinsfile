@@ -5,6 +5,7 @@ pipeline {
         SONAR_LOGIN = credentials('sonar')
         NEXUS_HOST_URL = 'http://192.168.230.140:8081/'
         NEXUS_LOGIN = credentials('deploymentRepoo')
+       DOCKER_CREDENTIALS = credentials('docker') // Your Docker registry credentials
     }
     
     stages {
@@ -68,22 +69,32 @@ pipeline {
         }
     }
          stages {
-        stage('Build Docker Image') {
+          stage('Build Docker Image') {
             steps {
+                echo 'Building Docker image...'
                 script {
-                    // Build the Docker image
-                    sh 'docker build -t mariemkhamassi/alpine:1.0.0 .'
+                    dir('Desktop/docker') {
+                             sh 'ls -l'
+                      sh 'docker build -t mariemkhamassi/alpine:1.0.0 -f Dockerfile .'
+                    }
                 }
             }
         }
-        stage('Push Docker Image') {
+
+     stage('Push Docker Image') {
             steps {
+                echo 'Pushing Docker image...'
                 script {
-                    // Push the Docker image to Docker Hub
-                    sh 'docker push  mariemkhamassi/alpine:1.0.0'
+                    withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh """
+                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+                        docker push mariemkhamassi/alpine:1.0.0
+                        """
+                    }
                 }
             }
         }
+
     }
 }
 }
