@@ -8,7 +8,7 @@ pipeline {
         NEXUS_GROUP = "tn.esprit.spring"
         NEXUS_ARTIFACT = "kaddem"
         NEXUS_VERSION = "0.0.1"
-        NEXUS_CREDENTIALS = "admin:nexus"
+        NEXUS_CREDENTIALS = "admin:mustapha"
     }
     
     stages {
