@@ -67,5 +67,24 @@ pipeline {
             }
         }
     }
+         stages {
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    sh 'docker build -t mariemkhamassi/alpine:1.0.0 .'
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Push the Docker image to Docker Hub
+                    sh 'docker push  mariemkhamassi/alpine:1.0.0'
+                }
+            }
+        }
+    }
 }
 }
+
