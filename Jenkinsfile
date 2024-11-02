@@ -73,7 +73,7 @@ pipeline {
 
                     // Deploy to Nexus with correct credentials
                     echo 'Deploying to Nexus'
-                    sh "mvn deploy -Dnexus.username=admin -Dnexus.password=nexus"
+                    sh "mvn deploy -Dnexus.username=admin -Dnexus.password=mustapha"
                 }
             }
         }
