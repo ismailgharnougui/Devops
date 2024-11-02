@@ -56,27 +56,30 @@ pipeline {
         }
           
       stage('Nexus Deployment') {
-            steps {
-                script {
-                    // Get the component ID using the defined Nexus credentials
-                    def component_id = sh(
-                        script: "curl -u '${NEXUS_CREDENTIALS}' '${NEXUS_URL}/service/rest/v1/components?repository=${NEXUS_REPOSITORY}&group=${NEXUS_GROUP}&name=${NEXUS_ARTIFACT}&version=${NEXUS_VERSION}' | jq -r .items[].id",
-                        returnStdout: true
-                    ).trim()
+    steps {
+        script {
+            withCredentials([usernamePassword(credentialsId: 'nexus_credentials', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                // Get the component ID
+                def component_id = sh(
+                    script: "curl -u ${NEXUS_USERNAME}:${NEXUS_PASSWORD} '${NEXUS_URL}/service/rest/v1/components?repository=${NEXUS_REPOSITORY}&group=${NEXUS_GROUP}&name=${NEXUS_ARTIFACT}&version=${NEXUS_VERSION}' | jq -r .items[].id",
+                    returnStdout: true
+                ).trim()
 
-                    if (component_id) {
-                        echo "Deleting component with ID: ${component_id}"
-                        sh "curl -X DELETE -u '${NEXUS_CREDENTIALS}' '${NEXUS_URL}/service/rest/v1/components/${component_id}'"
-                    } else {
-                        echo "No component found with version ${NEXUS_VERSION} to delete."
-                    }
-
-                    // Deploy to Nexus with correct credentials
-                    echo 'Deploying to Nexus'
-                    sh "mvn deploy -Dnexus.username=admin -Dnexus.password=nexus"
+                if (component_id) {
+                    echo "Deleting component with ID: ${component_id}"
+                    sh "curl -X DELETE -u ${NEXUS_USERNAME}:${NEXUS_PASSWORD} '${NEXUS_URL}/service/rest/v1/components/${component_id}'"
+                } else {
+                    echo "No component found with version ${NEXUS_VERSION} to delete."
                 }
+
+                // Deploy to Nexus with correct credentials
+                echo 'Deploying to Nexus'
+                sh "mvn deploy -Dnexus.username=${NEXUS_USERNAME} -Dnexus.password=${NEXUS_PASSWORD}"
             }
         }
+    }
+}
+
     }
 }
 
