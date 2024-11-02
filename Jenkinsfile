@@ -77,7 +77,7 @@ pipeline {
                 echo 'Building Docker image...'
                 script {
                     dir('Desktop/docker') {
-                             sh 'ls -l'
+                             //sh 'ls -l'
                       sh 'docker build -t mariemkhamassi/alpine:1.0.0 -f Dockerfile .'
                     }
                 }
