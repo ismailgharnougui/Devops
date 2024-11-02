@@ -89,10 +89,9 @@ pipeline {
                 echo 'Pushing Docker image...'
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh """
-                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-                        docker push mariemkhamassi/alpine:1.0.0
-                        """
+                        
+                
+                        sh 'docker push mariemkhamassi/alpine:1.0.0'
                     }
                 }
             }
