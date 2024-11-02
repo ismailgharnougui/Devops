@@ -3,7 +3,7 @@ pipeline {
     environment {
         SONAR_HOST_URL = 'http://172.17.0.3:9000/'
         SONAR_LOGIN = credentials('sonar1')
-        NEXUS_URL = "http://localhost:8081"
+        NEXUS_URL = "http://172.17.0.2:8081"
         NEXUS_REPOSITORY = "maven-releases"
         NEXUS_GROUP = "tn.esprit.spring"
         NEXUS_ARTIFACT = "kaddem"
