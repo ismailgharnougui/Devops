@@ -8,7 +8,6 @@ pipeline {
         NEXUS_GROUP = "tn.esprit.spring"
         NEXUS_ARTIFACT = "kaddem"
         NEXUS_VERSION = "0.0.1"
-        NEXUS_CREDENTIALS = "admin:mustapha"
     }
     
     stages {
@@ -32,9 +31,9 @@ pipeline {
                 sh 'mvn compile'
             }
         }
+        
         stage('Coverage Report') {
             steps {
-                // Generate the Jacoco coverage report
                 sh '/usr/share/maven/bin/mvn verify'
             }
         }
@@ -55,25 +54,27 @@ pipeline {
             }
         }
           
-      stage('Nexus Deployment') {
+        stage('Nexus Deployment') {
             steps {
                 script {
-                    // Get the component ID using the defined Nexus credentials
-                    def component_id = sh(
-                        script: "curl -u '${NEXUS_CREDENTIALS}' '${NEXUS_URL}/service/rest/v1/components?repository=${NEXUS_REPOSITORY}&group=${NEXUS_GROUP}&name=${NEXUS_ARTIFACT}&version=${NEXUS_VERSION}' | jq -r .items[].id",
-                        returnStdout: true
-                    ).trim()
+                    withCredentials([usernamePassword(credentialsId: 'NEXUS-CREDENTIALS', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+                        // Get the component ID using the defined Nexus credentials
+                        def component_id = sh(
+                            script: "curl -u '${NEXUS_USERNAME}:${NEXUS_PASSWORD}' '${NEXUS_URL}/service/rest/v1/components?repository=${NEXUS_REPOSITORY}&group=${NEXUS_GROUP}&name=${NEXUS_ARTIFACT}&version=${NEXUS_VERSION}' | jq -r .items[].id",
+                            returnStdout: true
+                        ).trim()
 
-                    if (component_id) {
-                        echo "Deleting component with ID: ${component_id}"
-                        sh "curl -X DELETE -u '${NEXUS_CREDENTIALS}' '${NEXUS_URL}/service/rest/v1/components/${component_id}'"
-                    } else {
-                        echo "No component found with version ${NEXUS_VERSION} to delete."
+                        if (component_id) {
+                            echo "Deleting component with ID: ${component_id}"
+                            sh "curl -X DELETE -u '${NEXUS_USERNAME}:${NEXUS_PASSWORD}' '${NEXUS_URL}/service/rest/v1/components/${component_id}'"
+                        } else {
+                            echo "No component found with version ${NEXUS_VERSION} to delete."
+                        }
+
+                        // Deploy to Nexus with correct credentials
+                        echo 'Deploying to Nexus'
+                        sh "mvn deploy -Dusername=${NEXUS_USERNAME} -Dpassword=${NEXUS_PASSWORD}"
                     }
-
-                    // Deploy to Nexus with correct credentials
-                    echo 'Deploying to Nexus'
-                    sh "mvn deploy -Dnexus.username=admin -Dnexus.password=mustapha"
                 }
             }
         }
