@@ -30,7 +30,7 @@
         <repository>
             <id>deploymentRepoo</id>
             <name>Nexus Repository</name>
-            <url>http://172.17.0.2:8081/repository/deploymentRepoo/</url>
+            <url>http://172.17.0.2:8081/repository/maven-central/</url>
         </repository>
         
     </distributionManagement>
