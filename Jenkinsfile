@@ -8,7 +8,7 @@ NEXUS_REPOSITORY = "maven-releases"
 NEXUS_GROUP = "tn.esprit.spring"
 NEXUS_ARTIFACT = "kaddem"
 NEXUS_VERSION = "0.0.1"
-NEXUS_CREDENTIALS = credentials('NEXUS_CREDENTIALS')
+NEXUS_LOGIN  = credentials('nexus')
    
 }
 
@@ -63,7 +63,7 @@ stages {
                 echo 'Deploying to Nexus...'
                 //sh 'mvn deploy -DskipTests -X'
          
-         withCredentials([usernamePassword(credentialsId: 'NEXUS_CREDENTIALS', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+         withCredentials([usernamePassword(credentialsId: 'nexus', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
          
             sh 'mvn deploy -DskipTests -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD'
              
