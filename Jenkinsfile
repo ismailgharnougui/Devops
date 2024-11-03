@@ -58,7 +58,7 @@ stages {
     }
       
   stage('Nexus Deployment') {
-        steps {
+        
              steps {
                 echo 'Deploying to Nexus...'
                 //sh 'mvn deploy -DskipTests -X'
@@ -68,7 +68,7 @@ stages {
             sh 'mvn deploy -DskipTests -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD'
              
             }
-        }
+        
         }
     }
 }
