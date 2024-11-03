@@ -9,6 +9,8 @@ pipeline {
         NEXUS_ARTIFACT = "kaddem"
         NEXUS_VERSION = "0.0.1"
         NEXUS_CREDENTIALS = "admin:nexus"
+        DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'  // ID des credentials Docker Hub
+        DOCKERHUB_REPO = 'aziz2205/kaddem'  // Remplacez par votre repo Docker Hub
     }
     stages {
         stage('Checkout from Git') {
@@ -34,7 +36,6 @@ pipeline {
 
         stage('Coverage Report') {
             steps {
-                // Generate the Jacoco coverage report
                 sh '/usr/share/maven/bin/mvn verify'
             }
         }
@@ -55,10 +56,9 @@ pipeline {
             }
         }
         
- stage('Nexus Deployment') {
+        stage('Nexus Deployment') {
             steps {
                 script {
-                    // Get the component ID using the defined Nexus credentials
                     def component_id = sh(
                         script: "curl -u '${NEXUS_CREDENTIALS}' '${NEXUS_URL}/service/rest/v1/components?repository=${NEXUS_REPOSITORY}&group=${NEXUS_GROUP}&name=${NEXUS_ARTIFACT}&version=${NEXUS_VERSION}' | jq -r .items[].id",
                         returnStdout: true
@@ -70,14 +70,30 @@ pipeline {
                     } else {
                         echo "No component found with version ${NEXUS_VERSION} to delete."
                     }
-
-                    // Deploy to Nexus with correct credentials
                     echo 'Deploying to Nexus'
                     sh "mvn deploy -Dnexus.username=admin -Dnexus.password=nexus"
                 }
             }
         }
 
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo 'Building Docker Image'
+                    sh "docker build -t ${DOCKERHUB_REPO}:latest ."
+                }
+            }
+        }
 
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    echo 'Pushing Docker Image to Docker Hub'
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
+                        sh "docker push ${DOCKERHUB_REPO}:latest"
+                    }
+                }
+            }
+        }
     }
 }
