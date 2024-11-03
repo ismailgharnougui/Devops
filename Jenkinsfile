@@ -9,6 +9,8 @@ pipeline {
         NEXUS_ARTIFACT = "kaddem"
         NEXUS_VERSION = "0.0.1"
         NEXUS_CREDENTIALS = "admin:nexus"
+        DOCKER_HUB_CREDENTIALS = credentials('dockerhub-credentials') // Remplacez par votre ID de credentials Docker Hub dans Jenkins
+        DOCKER_IMAGE_NAME = "yourdockerhubusername/kaddem" // Remplacez par votre nom d'utilisateur Docker Hub et le nom de l'image
     }
     stages {
         stage('Checkout from Git') {
@@ -55,7 +57,7 @@ pipeline {
             }
         }
         
- stage('Nexus Deployment') {
+        stage('Nexus Deployment') {
             steps {
                 script {
                     // Get the component ID using the defined Nexus credentials
@@ -77,7 +79,29 @@ pipeline {
                 }
             }
         }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${DOCKER_IMAGE_NAME}:latest")
+                }
+            }
+        }
 
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
 
+        stage('Deploy with Docker Compose') {
+            steps {
+                sh 'docker-compose up -d'
+            }
+        }
     }
 }
