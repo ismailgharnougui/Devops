@@ -76,14 +76,16 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    echo 'Building Docker Image'
-                    sh "docker build -t ${DOCKERHUB_REPO}:latest ."
-                }
-            }
+       stage('Build Docker Image') {
+    steps {
+        script {
+            echo 'Building Docker Image'
+            // Spécifiez le nom complet du fichier Dockerfile avec l'option -f
+            sh "docker build -t ${DOCKERHUB_REPO}:latest -f Dockerfile.dockerfile ."
         }
+    }
+}
+
 
         stage('Push Docker Image to Docker Hub') {
             steps {
