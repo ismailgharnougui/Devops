@@ -9,8 +9,8 @@ pipeline {
         NEXUS_ARTIFACT = "kaddem"
         NEXUS_VERSION = "0.0.1"
         NEXUS_CREDENTIALS = "admin:nexus"
-        DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'  // ID des credentials Docker Hub
-        DOCKERHUB_REPO = 'aziz2205/kaddem'  // Remplacez par votre repo Docker Hub
+        DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'
+        DOCKERHUB_REPO = 'aziz2205/kaddem'
     }
     stages {
         stage('Checkout from Git') {
@@ -19,7 +19,7 @@ pipeline {
                 git branch: 'azizz-hannachi', url: 'https://github.com/ismailgharnougui/Devops'
             }
         }
-        
+
         stage('Maven Clean') {
             steps {
                 echo 'Running Maven Clean'
@@ -39,11 +39,11 @@ pipeline {
                 sh '/usr/share/maven/bin/mvn verify'
             }
         }
-        
+
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube Analysis'
-                withSonarQubeEnv('SonarQube') { 
+                withSonarQubeEnv('SonarQube') {
                     sh 'mvn sonar:sonar -Dsonar.projectKey=Devops -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
                 }
             }
@@ -55,7 +55,7 @@ pipeline {
                 sh 'mvn test jacoco:report'
             }
         }
-        
+
         stage('Nexus Deployment') {
             steps {
                 script {
@@ -89,7 +89,8 @@ pipeline {
             steps {
                 script {
                     echo 'Pushing Docker Image to Docker Hub'
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
+                    withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
                         sh "docker push ${DOCKERHUB_REPO}:latest"
                     }
                 }
