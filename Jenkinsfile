@@ -78,7 +78,7 @@ pipeline {
                 script {
                     dir('Desktop/docker') {
                              //sh 'ls -l'
-                      sh 'docker build -t mariemkhamassi/alpine:1.0.0 -f Dockerfile .'
+                      sh 'docker build -t mariemkhamassi/alpine:1.0.0 -f dockerfile .'
                     }
                 }
             }
