@@ -9,6 +9,7 @@ NEXUS_GROUP = "tn.esprit.spring"
 NEXUS_ARTIFACT = "deploymentRepo"
 NEXUS_VERSION = "0.0.1"
 NEXUS_LOGIN  = credentials('nexus')
+NEXUS_CREDENTIALS  = credentials('nexus')
    
 }
 
@@ -72,7 +73,7 @@ stages {
                         echo "No component found with version ${NEXUS_VERSION} to delete."
                     }
                     echo 'Deploying to Nexus'
-                    sh "mvn deploy -Dnexus.username=admin -Dnexus.password=nexus"
+                    sh "mvn deploy -Dnexus.username=admin -Dnexus.password=mustapha"
                 }
             }
         }
