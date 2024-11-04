@@ -40,7 +40,7 @@ pipeline {
             steps {
                 //echo 'Running SonarQube Analysis'
                 withSonarQubeEnv('SonarQube-Server') { 
-                        sh 'mvn sonar:sonar -Dsonar.projectKey=Devops -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
+                        sh 'mvn sonar:sonar -Dsonar.projectKey=Devops -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
             
                 }
             }
@@ -83,7 +83,7 @@ pipeline {
             }
         
 
-     stage('Push Docker Image') {
+     stage('Push DockerHub') {
             steps {
                 echo 'Pushing Docker image...'
                 script {
