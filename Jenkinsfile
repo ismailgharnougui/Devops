@@ -6,12 +6,12 @@ pipeline {
         NEXUS_CREDENTIALS = credentials('nexus-credentials') // Nexus credentials ID
         SONAR_HOST_URL = 'http://172.17.0.1:9000/'
         SONAR_LOGIN = credentials('Sonarqube')
-        //NEXUS_URL = "http://localhost:8081"
+        NEXUS_URLL = "http://localhost:8081"
         NEXUS_REPOSITORY = "maven-releases"
         NEXUS_GROUP = "tn.esprit.spring"
         NEXUS_ARTIFACT = "kaddem"
         NEXUS_VERSION = "0.0.1"
-        //NEXUS_CREDENTIALS = "admin:nexus"
+        NEXUS_CREDENTIALSS = "admin:nexus"
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'
         DOCKERHUB_REPO = 'aziz2205/kaddem'
     }
@@ -72,13 +72,13 @@ pipeline {
             steps {
                 script {
                     def component_id = sh(
-                        script: "curl -u '${NEXUS_CREDENTIALS}' '${NEXUS_URL}/service/rest/v1/components?repository=${NEXUS_REPOSITORY}&group=${NEXUS_GROUP}&name=${NEXUS_ARTIFACT}&version=${NEXUS_VERSION}' | jq -r .items[].id",
+                        script: "curl -u '${NEXUS_CREDENTIALS}' '${NEXUS_URLL}/service/rest/v1/components?repository=${NEXUS_REPOSITORY}&group=${NEXUS_GROUP}&name=${NEXUS_ARTIFACT}&version=${NEXUS_VERSION}' | jq -r .items[].id",
                         returnStdout: true
                     ).trim()
 
                     if (component_id) {
                         echo "Deleting component with ID: ${component_id}"
-                        sh "curl -X DELETE -u '${NEXUS_CREDENTIALS}' '${NEXUS_URL}/service/rest/v1/components/${component_id}'"
+                        sh "curl -X DELETE -u '${NEXUS_CREDENTIALSS}' '${NEXUS_URLL}/service/rest/v1/components/${component_id}'"
                     } else {
                         echo "No component found with version ${NEXUS_VERSION} to delete."
                     }
