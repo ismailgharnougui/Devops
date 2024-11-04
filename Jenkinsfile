@@ -62,13 +62,13 @@ stages {
             steps {
                 script {
                     def component_id = sh(
-                        script: "curl -u '${NEXUS_CREDENTIALS}' '${NEXUS_URLL}/service/rest/v1/components?repository=${NEXUS_REPOSITORY}&group=${NEXUS_GROUP}&name=${NEXUS_ARTIFACT}&version=${NEXUS_VERSION}' | jq -r .items[].id",
+                        script: "curl -u '${NEXUS_CREDENTIALS}' '${NEXUS_URL}/service/rest/v1/components?repository=${NEXUS_REPOSITORY}&group=${NEXUS_GROUP}&name=${NEXUS_ARTIFACT}&version=${NEXUS_VERSION}' | jq -r .items[].id",
                         returnStdout: true
                     ).trim()
 
                     if (component_id) {
                         echo "Deleting component with ID: ${component_id}"
-                        sh "curl -X DELETE -u '${NEXUS_CREDENTIALSS}' '${NEXUS_URLL}/service/rest/v1/components/${component_id}'"
+                        sh "curl -X DELETE -u '${NEXUS_CREDENTIALSS}' '${NEXUS_URL}/service/rest/v1/components/${component_id}'"
                     } else {
                         echo "No component found with version ${NEXUS_VERSION} to delete."
                     }
