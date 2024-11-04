@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKER_IMAGE = "172.17.0.1:8083/docker-hosted/kaddem:latest" // Docker image with Nexus IP and port
-        NEXUS_CREDENTIALSS = credentials('nexus-credentials') // Nexus credentials ID
+        NEXUS_CREDENTIALS = credentials('nexus-credentials') // Nexus credentials ID
         SONAR_HOST_URL = 'http://172.17.0.1:9000/'
         SONAR_LOGIN = credentials('Sonarqube')
         NEXUS_URL = "http://localhost:8081"
@@ -10,7 +10,7 @@ pipeline {
         NEXUS_GROUP = "tn.esprit.spring"
         NEXUS_ARTIFACT = "kaddem"
         NEXUS_VERSION = "0.0.1"
-        NEXUS_CREDENTIALS = "admin:nexus"
+        //NEXUS_CREDENTIALS = "admin:nexus"
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'
         DOCKERHUB_REPO = 'aziz2205/kaddem'
     }
