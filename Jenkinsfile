@@ -6,7 +6,7 @@ SONAR_LOGIN = credentials('sonar1')
 NEXUS_URL = "http://172.17.0.2:8081"
 NEXUS_REPOSITORY = "maven-releases"
 NEXUS_GROUP = "tn.esprit.spring"
-NEXUS_ARTIFACT = "kaddem"
+NEXUS_ARTIFACT = "deploymentRepo"
 NEXUS_VERSION = "0.0.1"
 NEXUS_LOGIN  = credentials('nexus')
    
@@ -57,19 +57,24 @@ stages {
         }
     }
       
-  stage('Nexus Deployment') {
-        
-             steps {
-                echo 'Deploying to Nexus...'
-                //sh 'mvn deploy -DskipTests -X'
-         
-         withCredentials([usernamePassword(credentialsId: 'nexus', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
-         
-            sh 'mvn deploy -DskipTests -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD'
-             
+ stage('Nexus Deployment') {
+            steps {
+                script {
+                    def component_id = sh(
+                        script: "curl -u '${NEXUS_CREDENTIALS}' '${NEXUS_URLL}/service/rest/v1/components?repository=${NEXUS_REPOSITORY}&group=${NEXUS_GROUP}&name=${NEXUS_ARTIFACT}&version=${NEXUS_VERSION}' | jq -r .items[].id",
+                        returnStdout: true
+                    ).trim()
+
+                    if (component_id) {
+                        echo "Deleting component with ID: ${component_id}"
+                        sh "curl -X DELETE -u '${NEXUS_CREDENTIALSS}' '${NEXUS_URLL}/service/rest/v1/components/${component_id}'"
+                    } else {
+                        echo "No component found with version ${NEXUS_VERSION} to delete."
+                    }
+                    echo 'Deploying to Nexus'
+                    sh "mvn deploy -Dnexus.username=admin -Dnexus.password=nexus"
+                }
             }
-        
         }
-    }
 }
 }
