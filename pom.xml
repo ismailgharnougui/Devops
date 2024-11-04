@@ -84,6 +84,10 @@
             <name>Nexus Repository</name>
             <url>http://10.0.2.15:8081/repository/RepoNexus/</url>
         </repository>
+             <snapshotRepository>
+            <id>deploymentRepo</id>
+            <url>http://localhost:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
 
 </project>
