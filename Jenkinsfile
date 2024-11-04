@@ -1,6 +1,7 @@
 pipeline {
     agent any
     environment {
+        NEXUS_URL = "172.17.0.1:8083" 
         DOCKER_IMAGE = "172.17.0.1:8083/docker-hosted/kaddem:latest" // Docker image with Nexus IP and port
         NEXUS_CREDENTIALS = credentials('nexus-credentials') // Nexus credentials ID
         SONAR_HOST_URL = 'http://172.17.0.1:9000/'
