@@ -23,6 +23,7 @@ pipeline {
                     }
                 }
             }
+         }
         stage('Checkout from Git') {
             steps {
                 echo 'Pulling from Git'
@@ -85,7 +86,20 @@ pipeline {
                 }
             }
         }
+ stage('Build NDocker Image') {
+            steps {
+                sh """
+                    docker build -t \$DOCKER_IMAGE -f Dockerfile .
+                """
+            }
+        }
 
+        stage('Push NDocker Image') {
+            steps {
+                sh "docker push \$DOCKER_IMAGE"
+            }
+        }
+    
        stage('Build Docker Image') {
     steps {
         script {
