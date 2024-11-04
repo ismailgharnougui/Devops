@@ -28,9 +28,9 @@
    <!-- Deploy to Nexus -->
     <distributionManagement>
         <repository>
-            <id>deploymentRepoo</id>
+            <id>deploymentRepo</id>
             <name>Nexus Repository</name>
-            <url>http://172.17.0.2:8081/repository/maven-central/</url>
+            <url>http://172.17.0.2:8081/repository/deploymentRepo/</url>
         </repository>
         
     </distributionManagement>
