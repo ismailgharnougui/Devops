@@ -90,7 +90,7 @@ pipeline {
  stage('Build NDocker Image') {
             steps {
                 sh """
-                    docker build -t \$DOCKER_IMAGE -f Dockerfile .
+                    docker build -t \$DOCKER_IMAGE -f Dockerfile;dockerfile .
                 """
             }
         }
