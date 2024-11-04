@@ -6,7 +6,7 @@ pipeline {
         NEXUS_CREDENTIALS = credentials('nexus-credentials') // Nexus credentials ID
         SONAR_HOST_URL = 'http://172.17.0.1:9000/'
         SONAR_LOGIN = credentials('Sonarqube')
-        NEXUS_URL = "http://localhost:8081"
+        //NEXUS_URL = "http://localhost:8081"
         NEXUS_REPOSITORY = "maven-releases"
         NEXUS_GROUP = "tn.esprit.spring"
         NEXUS_ARTIFACT = "kaddem"
