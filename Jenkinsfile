@@ -76,13 +76,12 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
                 script {
-                    dir('Desktop/docker') {
-                             //sh 'ls -l'
+                   
                       sh 'docker build -t mariemkhamassi/alpine:1.0.0 -f dockerfile .'
                     }
                 }
             }
-        }
+        
 
      stage('Push Docker Image') {
             steps {
