@@ -3,6 +3,12 @@ pipeline {
     environment {
         SONAR_HOST_URL = 'http://10.0.2.15:9000/'
         SONAR_TOKEN = credentials('sonar-token')  // Reference to the SonarQube token credential
+        NEXUS_URL = 'http://localhost:8081'
+        NEXUS_REPOSITORY = 'maven-releases'  // Replace with your Nexus repository name
+        NEXUS_GROUP = 'tn.esprit.spring'
+        NEXUS_ARTIFACT = 'kaddem'
+        NEXUS_VERSION = '0.0.1'  // Replace with your artifact version
+        NEXUS_CREDENTIALS = credentials('nexus-credentials')  // Reference to the Nexus credentials
     }
 
     stages {
@@ -38,6 +44,29 @@ pipeline {
             steps {
                 echo 'Running JUnit/Mockito Tests'
                 sh 'mvn test'
+            }
+        }
+
+        stage('Deploy to Nexus') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                        echo 'Deploying to Nexus'
+                        sh '''
+                            mvn deploy:deploy-file \
+                                -Durl=${NEXUS_URL}/repository/${NEXUS_REPOSITORY} \
+                                -DrepositoryId=nexus \
+                                -DgroupId=${NEXUS_GROUP} \
+                                -DartifactId=${NEXUS_ARTIFACT} \
+                                -Dversion=${NEXUS_VERSION} \
+                                -Dpackaging=jar \
+                                -Dfile=target/${NEXUS_ARTIFACT}-${NEXUS_VERSION}.jar \
+                                -DgeneratePom=true \
+                                -Dusername=${NEXUS_USER} \
+                                -Dpassword=${NEXUS_PASS}
+                        '''
+                    }
+                }
             }
         }
     }
