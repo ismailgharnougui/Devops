@@ -24,8 +24,14 @@ pipeline {
             steps {
                 echo 'Running SonarQube Analysis'
                 withSonarQubeEnv('SonarQube') {
-                    // Use the SonarQube token from Jenkins credentials
-                    sh 'mvn sonar:sonar -Dsonar.projectKey=Devops -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.token=$SONAR_TOKEN -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
+                    sh '''
+                        mvn sonar:sonar \
+                            -Dsonar.projectKey=Devops \
+                            -Dsonar.host.url=$SONAR_HOST_URL \
+                            -Dsonar.token=$SONAR_TOKEN \
+                            -Dsonar.java.binaries=target/classes \
+                            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+                    '''
                 }
             }
         }
@@ -36,18 +42,6 @@ pipeline {
                 sh 'mvn test'
             }
         }
-
-        // Optional stage for Nexus Deployment:
-        /*
-        stage('Deploy to Nexus') {
-            steps {
-                echo 'Deploying to Nexus...'
-                withCredentials([usernamePassword(credentialsId: 'nexus', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
-                    sh 'mvn deploy -DskipTests -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD'
-                }
-            }
-        }
-        */
     }
 
     post {
