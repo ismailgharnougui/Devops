@@ -4,7 +4,7 @@ pipeline {
         SONAR_HOST_URL = 'http://10.0.2.15:9000/'
         SONAR_TOKEN = credentials('sonar-token')  // Reference to the SonarQube token credential
     }
-    
+
     stages {
         stage('Checkout from Git') {
             steps {
@@ -13,10 +13,10 @@ pipeline {
             }
         }
 
-        stage('Maven Clean') {
+        stage('Maven Clean Install') {
             steps {
-                echo 'Running Maven Clean'
-                sh 'mvn clean'
+                echo 'Running Maven Clean Install'
+                sh 'mvn clean install'
             }
         }
 
@@ -29,7 +29,6 @@ pipeline {
                             -Dsonar.projectKey=Devops \
                             -Dsonar.host.url=$SONAR_HOST_URL \
                             -Dsonar.token=$SONAR_TOKEN \
-                            -Dsonar.java.binaries=target/classes \
                             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
                     '''
                 }
