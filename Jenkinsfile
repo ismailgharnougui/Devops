@@ -28,8 +28,7 @@ pipeline {
                         mvn sonar:sonar \
                             -Dsonar.projectKey=Devops \
                             -Dsonar.host.url=$SONAR_HOST_URL \
-                            -Dsonar.token=$SONAR_TOKEN \
-                            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+                            -Dsonar.token=$SONAR_TOKEN
                     '''
                 }
             }
