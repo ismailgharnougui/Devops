@@ -124,4 +124,17 @@ pipeline {
             }
         }
     }
+    post{
+        always{
+            emailext (
+            subject: "Notification de Pipeline Jenkins : ${env.JOB_NAME} #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
+            body: """<p>Le pipeline pour le projet <b>${env.JOB_NAME}</b> est terminé.</p>
+                     <p>Status : ${currentBuild.currentResult}</p>
+                     <p>Consultez le log de build <a href="${env.BUILD_URL}">ici</a>.</p>""",
+            to: 'aziz.hannachi@esprit.tn',
+            replyTo: 'aziz.hannachi@esprit.tn',
+            mimeType: 'text/html'
+        )
+        }
+    }
 }
