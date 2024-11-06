@@ -9,6 +9,8 @@ pipeline {
         NEXUS_ARTIFACT = 'kaddem'
         NEXUS_VERSION = '0.0.1'  // Replace with your artifact version
         NEXUS_CREDENTIALS = credentials('nexus-credentials')  // Reference to the Nexus credentials
+        DOCKERHUB_CREDENTIALS = credentials('docker hub')  // DockerHub credentials reference
+        DOCKER_IMAGE = 'manar044/kaddem:latest'  // Your Docker image name
     }
 
     stages {
@@ -66,6 +68,30 @@ pipeline {
                                 -Dpassword=${NEXUS_PASS}
                         '''
                     }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker Image'
+                withCredentials([usernamePassword(credentialsId: 'docker hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker build -t $DOCKER_IMAGE .
+                    '''
+                }
+            }
+        }
+
+        stage('Push Docker Image to DockerHub') {
+            steps {
+                echo 'Pushing Docker Image to DockerHub'
+                withCredentials([usernamePassword(credentialsId: 'docker hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker push $DOCKER_IMAGE
+                    '''
                 }
             }
         }

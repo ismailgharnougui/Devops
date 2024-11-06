@@ -16,7 +16,6 @@ services:
     image: mysql:8.0  # This uses the official MySQL image
     container_name: mysql-db
     environment:
-      MYSQL_ROOT_PASSWORD:
       MYSQL_DATABASE: DevopsManarWahada
     ports:
       - "3307:3306"
