@@ -1,13 +1,13 @@
 services:
   spring-app:
-    image: your-image-name-here
+    image: kaddem-manar-app
     container_name: spring-app
     ports:
       - "8089:8089"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/kaddem_db?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/DevopsManarWahada?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 0000
+      SPRING_DATASOURCE_PASSWORD:
     depends_on:
       - mysql-db
     restart: always
@@ -16,8 +16,8 @@ services:
     image: mysql:8.0  # This uses the official MySQL image
     container_name: mysql-db
     environment:
-      MYSQL_ROOT_PASSWORD: 0000
-      MYSQL_DATABASE: kaddem_db
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_DATABASE: DevopsManarWahada
     ports:
       - "3307:3306"
     volumes:
