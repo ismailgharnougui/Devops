@@ -11,8 +11,8 @@ pipeline {
         NEXUS_VERSION = '0.0.1'
         NEXUS_CREDENTIALS = credentials('nexus-credentials')
         DOCKERHUB_CREDENTIALS = credentials('docker-hub')
-        DOCKER_IMAGE = 'manar044/kaddem'
-        IMAGE_TAG = "${env.BUILD_NUMBER}"  // Dynamic image tag based on build number
+        DOCKER_IMAGE = 'manar044/kaddem'  // Default image name
+        IMAGE_TAG = "${env.BUILD_NUMBER ?: 'latest'}"  // Default to 'latest' if BUILD_NUMBER is not set
     }
 
     stages {
@@ -67,15 +67,13 @@ pipeline {
             }
         }
 
-        // Multi-Stage Docker Build: Optimized Docker Build
         stage('Docker Build') {
             steps {
                 echo 'Building Docker Image'
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     script {
-                        // Corrected Docker build command with updated syntax
                         sh '''
-                            docker login -u $DOCKER_USER -p $DOCKER_PASS
+                            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
                             docker build --tag $DOCKER_IMAGE:$IMAGE_TAG -f dockerfile .
                         '''
                     }
@@ -83,8 +81,7 @@ pipeline {
             }
         }
 
-        // Push Docker Image to DockerHub and Nexus in Parallel
-        stage('Docker Image  Registries') {
+        stage('Docker Image Registries') {
             parallel {
                 stage('Push Docker Image to DockerHub') {
                     steps {
@@ -117,7 +114,6 @@ pipeline {
             }
         }
 
-        // Clean Up Docker Images to Save Space
         stage('Clean Up Docker Images') {
             steps {
                 echo 'Cleaning up Docker images'
