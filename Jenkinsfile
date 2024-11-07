@@ -9,6 +9,7 @@ NEXUS_GROUP = "tn.esprit.spring"
 NEXUS_ARTIFACT = "kaddem"
 NEXUS_VERSION = "0.0.1"
 NEXUS_LOGIN  = credentials('nexus')
+DOCKER_CREDENTIALS = credentials('docker') // Your Docker registry credentials
 NEXUS_CREDENTIALS  = credentials('nexus')
    
 }
@@ -77,5 +78,48 @@ stages {
                 }
             }
         }
-}
+  stage('Test Docker Access') {
+            steps {
+                echo 'Testing Docker access...'
+                sh 'docker images'
+            }
+        }
+   
+          stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image...'
+                script {
+                   
+                      sh 'docker build -t mustapha/alpine:1.0.0 -f dockerfile .'
+                    }
+                }
+            }
+        
+
+     stage('Push DockerHub') {
+            steps {
+                echo 'Pushing Docker image...'
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    
+                // Connexion à Docker
+                sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                
+           
+                sh 'docker push mustapha/alpine:1.0.0'
+                    }
+                }
+            }
+        }
+         stage('Docker Compose') {
+            steps {
+             script {
+            sh'docker compose pull'
+            sh 'docker compose down'
+            sh 'docker compose up -d'
+            }
+         }
+        }
+
+    }
 }
