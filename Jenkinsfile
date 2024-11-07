@@ -76,7 +76,7 @@ pipeline {
                         // Corrected Docker build command with updated syntax
                         sh '''
                             docker login -u $DOCKER_USER -p $DOCKER_PASS
-                            sudo docker build --tag $DOCKER_IMAGE:$IMAGE_TAG -f dockerfile .
+                            docker build --tag $DOCKER_IMAGE:$IMAGE_TAG -f dockerfile .
                         '''
                     }
                 }
@@ -93,7 +93,7 @@ pipeline {
                             script {
                                 sh '''
                                     echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                                    sudo docker push $DOCKER_IMAGE:$IMAGE_TAG
+                                    docker push $DOCKER_IMAGE:$IMAGE_TAG
                                 '''
                             }
                         }
@@ -107,8 +107,8 @@ pipeline {
                             script {
                                 sh '''
                                     docker login -u $NEXUS_USER -p $NEXUS_PASS $NEXUS_URL
-                                    sudo docker tag $DOCKER_IMAGE:$IMAGE_TAG $NEXUS_URL/repository/docker-hosted/$DOCKER_IMAGE:$IMAGE_TAG
-                                    sudo docker push $NEXUS_URL/repository/docker-hosted/$DOCKER_IMAGE:$IMAGE_TAG
+                                    docker tag $DOCKER_IMAGE:$IMAGE_TAG $NEXUS_URL/repository/docker-hosted/$DOCKER_IMAGE:$IMAGE_TAG
+                                    docker push $NEXUS_URL/repository/docker-hosted/$DOCKER_IMAGE:$IMAGE_TAG
                                 '''
                             }
                         }
