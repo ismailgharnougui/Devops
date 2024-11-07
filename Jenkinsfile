@@ -101,9 +101,9 @@ pipeline {
          stage('Docker Compose') {
             steps {
              script {
-            sh'docker compose pull'
-            sh 'docker compose down'
-            sh 'docker compose up -d'
+            sh'docker-compose pull'
+            sh 'docker-compose down'
+            sh 'docker-compose up -d'
             }
          }
         }
