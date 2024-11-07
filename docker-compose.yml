@@ -4,7 +4,7 @@ services:
   db:
     image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: 0000
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: mariem-db-1
     ports:
       - "3306:3306"
