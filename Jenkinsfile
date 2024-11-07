@@ -8,29 +8,29 @@ pipeline {
         NEXUS_REPOSITORY = 'maven-releases'
         NEXUS_GROUP = 'tn.esprit.spring'
         NEXUS_ARTIFACT = 'kaddem'
-        NEXUS_VERSION = '0.0.1' // Replace with your artifact version
-        NEXUS_CREDENTIALS = credentials('nexus-credentials') // Reference to the Nexus credentials
-        DOCKERHUB_CREDENTIALS = credentials('docker-hub') // DockerHub credentials reference
-        DOCKER_IMAGE = 'manar044/kaddem' // Docker image name
+        NEXUS_VERSION = '0.0.1'
+        NEXUS_CREDENTIALS = credentials('nexus-credentials')
+        DOCKERHUB_CREDENTIALS = credentials('docker-hub')
+        DOCKER_IMAGE = 'manar044/kaddem'
         IMAGE_TAG = "${env.BUILD_NUMBER}"  // Dynamic image tag based on build number
     }
 
     stages {
-        stage('Checkout from Git') {
+        stage('Git') {
             steps {
                 echo 'Pulling from Git'
                 git branch: 'Manar', url: 'https://github.com/ismailgharnougui/Devops'
             }
         }
 
-        stage('Maven Clean Install') {
+        stage('Maven') {
             steps {
                 echo 'Running Maven Clean Install'
                 sh 'mvn clean install'
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('SonarQube') {
             steps {
                 echo 'Running SonarQube Analysis'
                 withSonarQubeEnv('SonarQube') {
@@ -44,14 +44,14 @@ pipeline {
             }
         }
 
-        stage('JUnit/Mockito Tests') {
+        stage('JUnit/Mockito') {
             steps {
                 echo 'Running JUnit/Mockito Tests'
                 sh 'mvn test'
             }
         }
 
-        stage('Deploy to Nexus') {
+        stage('Nexus') {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
@@ -74,30 +74,57 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        // Multi-Stage Docker Build: Optimized Docker Build
+        stage('Docker Build') {
             steps {
                 echo 'Building Docker Image'
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh '''
-                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                        sudo docker build -t $DOCKER_IMAGE:$IMAGE_TAG .
-                    '''
+                    script {
+                        // Corrected Docker build command with updated syntax
+                        sh '''
+                            docker login -u $DOCKER_USER -p $DOCKER_PASS
+                            sudo docker build --tag $DOCKER_IMAGE:$IMAGE_TAG -f dockerfile .
+                        '''
+                    }
                 }
             }
         }
 
-        stage('Push Docker Image to DockerHub') {
-            steps {
-                echo 'Pushing Docker Image to DockerHub'
-                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh '''
-                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                        sudo docker push $DOCKER_IMAGE:$IMAGE_TAG
-                    '''
+        // Push Docker Image to DockerHub and Nexus in Parallel
+        stage('Docker Image  Registries') {
+            parallel {
+                stage('Push Docker Image to DockerHub') {
+                    steps {
+                        echo 'Pushing Docker Image to DockerHub'
+                        withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                            script {
+                                sh '''
+                                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                                    sudo docker push $DOCKER_IMAGE:$IMAGE_TAG
+                                '''
+                            }
+                        }
+                    }
+                }
+
+                stage('Docker Image Push To Nexus') {
+                    steps {
+                        echo 'Pushing Docker Image to Nexus'
+                        withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                            script {
+                                sh '''
+                                    docker login -u $NEXUS_USER -p $NEXUS_PASS $NEXUS_URL
+                                    sudo docker tag $DOCKER_IMAGE:$IMAGE_TAG $NEXUS_URL/repository/docker-hosted/$DOCKER_IMAGE:$IMAGE_TAG
+                                    sudo docker push $NEXUS_URL/repository/docker-hosted/$DOCKER_IMAGE:$IMAGE_TAG
+                                '''
+                            }
+                        }
+                    }
                 }
             }
         }
 
+        // Clean Up Docker Images to Save Space
         stage('Clean Up Docker Images') {
             steps {
                 echo 'Cleaning up Docker images'
