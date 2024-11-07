@@ -88,17 +88,6 @@ pipeline {
             }
         }
 
-        stage('Docker Compose') {
-            steps {
-                echo 'Running Docker Compose'
-                // Runs Docker Compose to start up services defined in the docker-compose.yml file
-                sh '''
-                    docker-compose down || true
-                    docker-compose up -d
-                '''
-            }
-        }
-
         stage('Docker Image Registries') {
             parallel {
                 stage('Push Docker Image to DockerHub') {
@@ -129,6 +118,15 @@ pipeline {
                         }
                     }
                 }
+            }
+        }
+
+        stage('Docker Compose') {
+            steps {
+                echo 'Running Docker Compose'
+                sh '''
+                    docker compose up -d
+                '''
             }
         }
     }
