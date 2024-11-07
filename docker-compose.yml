@@ -5,7 +5,7 @@ services:
     image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: 0000
-      MYSQL_DATABASE: kaddem_db
+      MYSQL_DATABASE: mariem-db-1
     ports:
       - "3306:3306"
     volumes:
@@ -15,7 +15,7 @@ services:
   app:
     image: mariemkhamassi/alpine:1.0.0 
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/kaddem_db?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/mariem-db-1?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 0000
     ports:
