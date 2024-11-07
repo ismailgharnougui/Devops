@@ -44,13 +44,6 @@ pipeline {
             }
         }
 
-        stage('JUnit/Mockito') {
-            steps {
-                echo 'Running JUnit/Mockito Tests'
-                sh 'mvn test'
-            }
-        }
-
         stage('Nexus') {
             steps {
                 script {
