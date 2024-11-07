@@ -8,11 +8,18 @@ pipeline {
         NEXUS_REPOSITORY = 'maven-releases'
         NEXUS_GROUP = 'tn.esprit.spring'
         NEXUS_ARTIFACT = 'kaddem'
+<<<<<<< HEAD
         NEXUS_VERSION = '0.0.1'
         NEXUS_CREDENTIALS = credentials('nexus-credentials')
         DOCKERHUB_CREDENTIALS = credentials('docker-hub')
         DOCKER_IMAGE = 'manar044/kaddem'
         IMAGE_TAG = "${env.BUILD_NUMBER}"  // Dynamic image tag based on build number
+=======
+        NEXUS_VERSION = '0.0.1'  // Replace with your artifact version
+        NEXUS_CREDENTIALS = credentials('nexus-credentials')  // Reference to the Nexus credentials
+        DOCKERHUB_CREDENTIALS = credentials('docker-hub')  // DockerHub credentials reference
+        DOCKER_IMAGE = 'manar044/kaddem:latest'  // Your Docker image name
+>>>>>>> 86766703c096786b83a12d75c61f3e22e59f4432
     }
 
     stages {
@@ -78,6 +85,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker Image'
+<<<<<<< HEAD
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     script {
                         // Corrected Docker build command with updated syntax
@@ -86,10 +94,18 @@ pipeline {
                             sudo docker build --tag $DOCKER_IMAGE:$IMAGE_TAG -f dockerfile .
                         '''
                     }
+=======
+                withCredentials([usernamePassword(credentialsId: 'docker hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        sudo docker build -t $DOCKER_IMAGE .
+                    '''
+>>>>>>> 86766703c096786b83a12d75c61f3e22e59f4432
                 }
             }
         }
 
+<<<<<<< HEAD
         // Push Docker Image to DockerHub and Nexus in Parallel
         stage('Push Docker Image to Registries') {
             parallel {
@@ -105,6 +121,16 @@ pipeline {
                             }
                         }
                     }
+=======
+        stage('Push Docker Image to DockerHub') {
+            steps {
+                echo 'Pushing Docker Image to DockerHub'
+                withCredentials([usernamePassword(credentialsId: 'docker hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        sudo docker push $DOCKER_IMAGE
+                    '''
+>>>>>>> 86766703c096786b83a12d75c61f3e22e59f4432
                 }
 
                 stage('Push Docker Image to Nexus') {
@@ -147,7 +173,7 @@ pipeline {
             echo 'Pipeline failed. Checking logs for errors.'
         }
         unstable {
-            echo 'Pipeline was unstable.'
+            echo 'Pipeline was unstable..'
         }
     }
 }
