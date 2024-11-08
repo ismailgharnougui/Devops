@@ -11,7 +11,7 @@ pipeline {
         NEXUS_VERSION = '0.0.1'
         NEXUS_CREDENTIALS = credentials('nexus-credentials')
         DOCKERHUB_CREDENTIALS = credentials('docker-hub')
-        DOCKER_IMAGE = 'manar044/kaddem'
+        DOCKER_IMAGE = 'kaddem-manar-app'
         IMAGE_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
     }
 
