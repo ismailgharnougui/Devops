@@ -23,14 +23,14 @@ pipeline {
             }
         }
 
-        stage('Maven Clean Install') {
+        stage('Maven Clean') {
             steps {
                 echo 'Running Maven Clean Install'
                 sh 'mvn clean install'
             }
         }
 
-        stage('JUnit/Mockito Tests') {
+        stage('JUnit/Mockito') {
             steps {
                 echo 'Running JUnit/Mockito Tests'
                 sh 'mvn test'
