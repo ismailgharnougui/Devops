@@ -11,7 +11,7 @@ services:
     restart: always
 
   app:
-    image:  mariemkhamassi/alpine:1.0.0
+    image:  mustapha/alpine:1.0.0
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/kaddem_db?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
