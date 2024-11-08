@@ -123,10 +123,14 @@ pipeline {
 
         stage('Docker Compose') {
             steps {
-                echo 'Running Docker Compose'
-                sh '''
-                    docker compose up -d
-                '''
+                echo 'Pulling Docker Images'
+                sh 'docker compose pull'
+                
+                echo 'Shutting down Docker containers'
+                sh 'docker compose down'
+                
+                echo 'Starting Docker containers'
+                sh 'docker compose up -d'
             }
         }
     }
