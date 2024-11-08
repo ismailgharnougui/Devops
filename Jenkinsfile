@@ -92,7 +92,7 @@ pipeline {
             steps {
                 echo 'Building NDocker Image'
                 sh """
-                    docker build -t \$DOCKER_IMAGE -f Dockerfile.dockerfile .
+                    docker build -t \$DOCKER_IMAGE -f dockerfile .
                 """
             }
         }
