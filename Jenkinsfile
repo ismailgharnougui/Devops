@@ -88,34 +88,39 @@ pipeline {
             }
         }
 
-        stage('Docker Image Registries') {
-            parallel {
-                stage('Push Docker Image to DockerHub') {
-                    steps {
-                        echo 'Pushing Docker Image to DockerHub'
-                        withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                            script {
-                                sh '''
-                                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                                    docker push $DOCKER_IMAGE:$IMAGE_TAG
-                                '''
-                            }
-                        }
+        stage('Nexus docker Image') {
+            steps {
+                echo 'Building NDocker Image'
+                sh """
+                    docker build -t \$DOCKER_IMAGE -f Dockerfile.dockerfile .
+                """
+            }
+        }
+
+        stage('Docker Image into DockerHub') {
+            steps {
+                echo 'Pushing Docker Image to DockerHub'
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    script {
+                        sh '''
+                            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                            docker push $DOCKER_IMAGE:$IMAGE_TAG
+                        '''
                     }
                 }
+            }
+        }
 
-                stage('Docker Image Push To Nexus') {
-                    steps {
-                        echo 'Pushing Docker Image to Nexus'
-                        withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                            script {
-                                sh '''
-                                    docker login -u $NEXUS_USER -p $NEXUS_PASS $NEXUS_URL
-                                    docker tag $DOCKER_IMAGE:$IMAGE_TAG $NEXUS_URL/repository/docker-hosted/$DOCKER_IMAGE:$IMAGE_TAG
-                                    docker push $NEXUS_URL/repository/docker-hosted/$DOCKER_IMAGE:$IMAGE_TAG
-                                '''
-                            }
-                        }
+        stage('Docker Image into Nexus') {
+            steps {
+                echo 'Pushing Docker Image to Nexus'
+                withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    script {
+                        sh '''
+                            docker login -u $NEXUS_USER -p $NEXUS_PASS 127.0.0.1:8083
+                            docker tag $DOCKER_IMAGE:$IMAGE_TAG 127.0.0.1:8083/repository/docker-hosted/$DOCKER_IMAGE:$IMAGE_TAG
+                            docker push 127.0.0.1:8083/repository/docker-hosted/$DOCKER_IMAGE:$IMAGE_TAG
+                        '''
                     }
                 }
             }
