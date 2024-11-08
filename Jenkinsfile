@@ -11,8 +11,8 @@ pipeline {
         NEXUS_VERSION = '0.0.1'
         NEXUS_CREDENTIALS = credentials('nexus-credentials')
         DOCKERHUB_CREDENTIALS = credentials('docker-hub')
-        DOCKER_IMAGE = 'manar044/kaddem'  // Default image name
-        IMAGE_TAG = "${env.BUILD_NUMBER ?: 'latest'}"  // Default to 'latest' if BUILD_NUMBER is not set
+        DOCKER_IMAGE = 'manar044/kaddem'
+        IMAGE_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
     }
 
     stages {
@@ -134,6 +134,19 @@ pipeline {
     post {
         always {
             echo 'Pipeline completed. Cleaning up...'
+            emailext(
+                subject: "Pipeline Notification: ${env.JOB_NAME} Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
+                body: """
+                    <h3>Pipeline Notification</h3>
+                    <p><b>Project:</b> ${env.JOB_NAME}</p>
+                    <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
+                    <p><b>Status:</b> ${currentBuild.currentResult}</p>
+                    <p><a href="${env.BUILD_URL}">View Build Details</a></p>
+                """,
+                to: 'manar.wahada@esprit.tn',
+                replyTo: 'manar.wahada@esprit.tn',
+                mimeType: 'text/html'
+            )
         }
         success {
             echo 'Pipeline finished successfully!'
