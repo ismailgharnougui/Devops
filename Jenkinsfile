@@ -13,6 +13,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker-hub')
         DOCKER_IMAGE = 'manar044/kaddem-manar-app'
         IMAGE_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
+        SPRING_APP_URL = 'http://localhost:8089/actuator/prometheus'
     }
 
     stages {
@@ -106,6 +107,20 @@ pipeline {
             steps {
                 echo 'Starting Docker containers'
                 sh 'docker compose up -d'
+            }
+        }
+
+        stage('Verify Prometheus Metrics') {
+            steps {
+                script {
+                    echo 'Verifying Prometheus Metrics Exposed'
+                    def result = sh(script: "curl -s ${SPRING_APP_URL}", returnStdout: true)
+                    if (result.contains('prometheus_metric_here')) {
+                        echo "Prometheus metrics are exposed correctly!"
+                    } else {
+                        error "Prometheus metrics not found!"
+                    }
+                }
             }
         }
     }
