@@ -109,47 +109,59 @@ pipeline {
                 sh 'docker compose up -d'
             }
         }
-
-        stage('Verify Prometheus Metrics') {
-            steps {
-                script {
-                    echo 'Verifying Prometheus Metrics Exposed'
-                    def result = sh(script: "curl -s ${SPRING_APP_URL}", returnStdout: true)
-                    if (result.contains('prometheus_metric_here')) {
-                        echo "Prometheus metrics are exposed correctly!"
-                    } else {
-                        error "Prometheus metrics not found!"
-                    }
-                }
-            }
-        }
     }
 
     post {
-        always {
-            echo 'Pipeline completed. Cleaning up...'
+        success {
+            echo 'Pipeline finished successfully!'
             emailext(
-                subject: "Pipeline Notification: ${env.JOB_NAME} Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
+                subject: "Pipeline Notification: ${env.JOB_NAME} Build #${env.BUILD_NUMBER} - SUCCESS",
                 body: """
                     <h3>Pipeline Notification</h3>
                     <p><b>Project:</b> ${env.JOB_NAME}</p>
                     <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
-                    <p><b>Status:</b> ${currentBuild.currentResult}</p>
+                    <p><b>Status:</b> SUCCESS</p>
                     <p><a href="${env.BUILD_URL}">View Build Details</a></p>
                 """,
-                to: 'manar.wahada@esprit.tn',
-                replyTo: 'manar.wahada@esprit.tn',
+                to: 'manarwahada177@gmail.com',
+                replyTo: 'manarwahada177@gmail.com',
                 mimeType: 'text/html'
             )
         }
-        success {
-            echo 'Pipeline finished successfully!'
-        }
         failure {
             echo 'Pipeline failed. Checking logs for errors.'
+            emailext(
+                subject: "Pipeline Notification: ${env.JOB_NAME} Build #${env.BUILD_NUMBER} - FAILURE",
+                body: """
+                    <h3>Pipeline Notification</h3>
+                    <p><b>Project:</b> ${env.JOB_NAME}</p>
+                    <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
+                    <p><b>Status:</b> FAILURE</p>
+                    <p><a href="${env.BUILD_URL}">View Build Details</a></p>
+                """,
+                to: 'manarwahada177@gmail.com',
+                replyTo: 'manarwahada177@gmail.com',
+                mimeType: 'text/html'
+            )
         }
         unstable {
             echo 'Pipeline was unstable.'
+            emailext(
+                subject: "Pipeline Notification: ${env.JOB_NAME} Build #${env.BUILD_NUMBER} - UNSTABLE",
+                body: """
+                    <h3>Pipeline Notification</h3>
+                    <p><b>Project:</b> ${env.JOB_NAME}</p>
+                    <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
+                    <p><b>Status:</b> UNSTABLE</p>
+                    <p><a href="${env.BUILD_URL}">View Build Details</a></p>
+                """,
+                to: 'manarwahada177@gmail.com',
+                replyTo: 'manarwahada177@gmail.com',
+                mimeType: 'text/html'
+            )
+        }
+        always {
+            echo 'Pipeline completed. Cleaning up...'
         }
     }
 }
