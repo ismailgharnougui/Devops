@@ -13,7 +13,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker-hub')
         DOCKER_IMAGE = 'manar044/kaddem-manar-app'
         IMAGE_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
-        SPRING_APP_URL = 'http://localhost:8089/actuator/prometheus'
+        SPRING_APP_URL = 'http://localhost:8089/kaddem/actuator/prometheus'
     }
 
     stages {
