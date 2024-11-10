@@ -1,11 +1,11 @@
 pipeline {
     agent any
-        environment {
+    environment {
         SONAR_HOST_URL = 'http://192.168.230.140:9000/'
         SONAR_LOGIN = credentials('sonar')
         NEXUS_HOST_URL = 'http://192.168.230.140:8081/'
         NEXUS_LOGIN = credentials('deploymentRepoo')
-       DOCKER_CREDENTIALS = credentials('docker') // Your Docker registry credentials
+        DOCKER_CREDENTIALS = credentials('docker') // Docker registry credentials
     }
     
     stages {
@@ -29,7 +29,8 @@ pipeline {
                 sh 'mvn compile'
             }
         }
-         stage('Coverage Report') {
+        
+        stage('Coverage Report') {
             steps {
                 // Generate the Jacoco coverage report
                 sh '/usr/share/maven/bin/mvn verify'
@@ -38,10 +39,8 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                //echo 'Running SonarQube Analysis'
                 withSonarQubeEnv('SonarQube-Server') { 
-                        sh 'mvn sonar:sonar -Dsonar.projectKey=Devops -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
-            
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=Devops -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
                 }
             }
         }
@@ -56,70 +55,62 @@ pipeline {
         stage('Deploy to Nexus') {
             steps {
                 echo 'Deploying to Nexus...'
-                //sh 'mvn deploy -DskipTests -X'
-         
-         withCredentials([usernamePassword(credentialsId: 'deploymentRepoo', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
-         
-            sh 'mvn deploy -DskipTests -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD'
-             
+                withCredentials([usernamePassword(credentialsId: 'deploymentRepoo', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+                    sh 'mvn deploy -DskipTests -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD'
+                }
             }
         }
-    }
-          stage('Test Docker Access') {
+        
+        stage('Test Docker Access') {
             steps {
                 echo 'Testing Docker access...'
                 sh 'docker images'
             }
         }
    
-          stage('Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
                 script {
-                   
-                      sh 'docker build -t mariemkhamassi/alpine:1.0.0 -f dockerfile .'
-                    }
+                    sh 'docker build -t mariemkhamassi/alpine:1.0.0 -f dockerfile .'
                 }
             }
+        }
         
-
-     stage('Push DockerHub') {
+        stage('Push DockerHub') {
             steps {
                 echo 'Pushing Docker image...'
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    
-                // Connexion à Docker
-                sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                
-           
-                sh 'docker push mariemkhamassi/alpine:1.0.0'
+                        // Docker login and push
+                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                        sh 'docker push mariemkhamassi/alpine:1.0.0'
                     }
                 }
             }
         }
-         stage('Docker Compose') {
+        
+        stage('Docker Compose') {
             steps {
-             script {
-            sh'docker compose pull'
-            sh 'docker compose down'
-            sh 'docker compose up -d'
+                script {
+                    sh 'docker compose pull'
+                    sh 'docker compose down'
+                    sh 'docker compose up -d'
+                }
             }
-         }
         }
-         post {
-    failure {
-        mail to: 'mariem.khamassi@esprit.tn',
-             subject: "Échec de Build : ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-             body: "Détails : ${env.BUILD_URL}"
     }
-    success {
-        mail to: 'mariem.khamassi@esprit.tn',
-             subject: "Succès de Build : ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-             body: "Détails : ${env.BUILD_URL}"
+
+    post {
+        failure {
+            mail to: 'mariem.khamassi@esprit.tn',
+                 subject: "Échec de Build : ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                 body: "Détails : ${env.BUILD_URL}"
+        }
+        success {
+            mail to: 'mariem.khamassi@esprit.tn',
+                 subject: "Succès de Build : ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                 body: "Détails : ${env.BUILD_URL}"
+        }
     }
 }
- }
-}
-
-
