@@ -107,8 +107,19 @@ pipeline {
             }
          }
         }
-
+         post {
+    failure {
+        mail to: 'mariem.khamassi@esprit.tn',
+             subject: "Échec de Build : ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+             body: "Détails : ${env.BUILD_URL}"
     }
+    success {
+        mail to: 'mariem.khamassi@esprit.tn',
+             subject: "Succès de Build : ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+             body: "Détails : ${env.BUILD_URL}"
+    }
+}
+}
 }
 
 
