@@ -81,7 +81,7 @@ stages {
   stage('Test Docker Access') {
             steps {
                 echo 'Testing Docker access...'
-                sh 'docker images'
+                sh 'sudo docker images'
             }
         }
    
@@ -106,7 +106,7 @@ stages {
                 sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                 
            
-                sh 'docker push mustapha849/alpine:1.0.0'
+                sh 'sudo docker push mustapha849/alpine:1.0.0'
                     }
                 }
             }
@@ -114,9 +114,9 @@ stages {
          stage('Docker Compose') {
             steps {
              script {
-            sh'docker compose pull'
-            sh 'docker compose down'
-            sh 'docker compose up -d'
+            sh'sudo docker compose pull'
+            sh 'sudo docker compose down'
+            sh 'sudo docker compose up -d'
             }
          }
         }
