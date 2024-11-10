@@ -84,6 +84,12 @@ stages {
                 sh 'sudo docker images'
             }
         }
+   stage('Package Application') {
+            steps {
+                echo 'Packaging application...'
+                sh 'mvn package -DskipTests' // Cette commande génère le fichier JAR dans le dossier target
+            }
+        }
    
           stage('Build Docker Image') {
             steps {
