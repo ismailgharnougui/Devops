@@ -90,7 +90,7 @@ stages {
                 echo 'Building Docker image...'
                 script {
                    
-                      sh 'docker build -t mustapha849/alpine:1.0.0 -f dockerfile .'
+                      sh 'sudo docker build -t mustapha849/alpine:1.0.0 -f dockerfile .'
                     }
                 }
             }
