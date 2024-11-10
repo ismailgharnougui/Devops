@@ -119,7 +119,7 @@ pipeline {
              body: "Détails : ${env.BUILD_URL}"
     }
 }
-}
+ }
 }
 
 
