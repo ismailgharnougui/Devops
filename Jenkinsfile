@@ -9,7 +9,7 @@ NEXUS_GROUP = "tn.esprit.spring"
 NEXUS_ARTIFACT = "kaddem"
 NEXUS_VERSION = "0.0.1"
 NEXUS_LOGIN  = credentials('nexus')
-DOCKER_CREDENTIALS = credentials('docker') // Your Docker registry credentials
+DOCKER_CREDENTIALS = credentials('docker1') // Your Docker registry credentials
 NEXUS_CREDENTIALS  = credentials('nexus')
    
 }
