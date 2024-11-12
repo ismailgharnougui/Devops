@@ -109,7 +109,7 @@ stages {
                     withCredentials([usernamePassword(credentialsId: 'docker1', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     
                 // Connexion à Docker
-                sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                sh 'echo $DOCKER_PASSWORD | sudo docker login -u $DOCKER_USERNAME --password-stdin'
                 
            
                 sh 'sudo docker push mustapha849/alpine:1.0.0'
