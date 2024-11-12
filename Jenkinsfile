@@ -69,7 +69,7 @@ stages {
 
                     if (component_id) {
                         echo "Deleting component with ID: ${component_id}"
-                        sh "curl -X DELETE -u '${NEXUS_CREDENTIALSS}' '${NEXUS_URL}/service/rest/v1/components/${component_id}'"
+                        sh "curl -X DELETE -u '${NEXUS_CREDENTIALS}' '${NEXUS_URL}/service/rest/v1/components/${component_id}'"
                     } else {
                         echo "No component found with version ${NEXUS_VERSION} to delete."
                     }
