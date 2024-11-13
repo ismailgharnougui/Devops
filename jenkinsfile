@@ -63,9 +63,9 @@ pipeline {
                   withCredentials([usernamePassword(credentialsId: 'sonarqube_credentials', usernameVariable: 'SONARQUBE_USERNAME', passwordVariable: 'SONARQUBE_PASSWORD')]) {
                       sh '''
                           mvn sonar:sonar \
-                              -Dsonar.host.url=http://192.168.33.10:9000 \
-                              -Dsonar.login=$SONARQUBE_USERNAME \
-                              -Dsonar.password=$SONARQUBE_PASSWORD \
+                              -Dsonar.host.url=http://192.168.0.10:9000 \
+                              -Dsonar.login=ADMIN \
+                              -Dsonar.password=Gharnougui123@ \
                               -Dsonar.exclusions="src/main/java/tn/esprit/spring/kaddem/entities/Equipe.java,
                               src/main/java/tn/esprit/spring/kaddem/entities/DetailEquipe.java,
                               src/main/java/tn/esprit/spring/kaddem/entities/Etudiant.java,
