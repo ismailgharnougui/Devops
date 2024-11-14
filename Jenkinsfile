@@ -1,28 +1,20 @@
 pipeline {
     agent any
 
-     tools {
-           maven 'M2_HOME'
-       }
+    tools {
+        maven 'M2_HOME'
+    }
 
     environment {
         SONAR_HOST_URL = 'http://192.168.0.10:9000'
         SONAR_LOGIN = 'admin'
         SONAR_PASSWORD = 'Gharnougui123@'
-        NEXUS_URL = 'http://localhost:8081' // URL de votre serveur Nexus
-        NEXUS_REPOSITORY = 'maven-releases' // Repository cible dans Nexus
-        NEXUS_GROUP = 'tn.esprit.spring' // Group ID dans Nexus
-        NEXUS_ARTIFACT = 'kaddem' // Nom de votre artefact
-        NEXUS_VERSION = '0.0.1' // Version de l'artefact
+        NEXUS_URL = 'http://192.168.0.10:8081' // Updated Nexus URL to match the pom.xml
+        NEXUS_REPOSITORY = 'maven-releases'
+        NEXUS_GROUP = 'tn.esprit.spring'
+        NEXUS_ARTIFACT = 'kaddem'
+        NEXUS_VERSION = '0.0.1'
     }
-    <servers>
-        <server>
-            <id>nexus</id>
-            <username>${env.NEXUS_USERNAME}</username>
-            <password>${env.NEXUS_PASSWORD}</password>
-        </server>
-    </servers>
-
 
     stages {
         stage('Checkout from Git') {
@@ -53,7 +45,6 @@ pipeline {
             }
         }
 
-
         stage('Tests - JUnit/Mockito') {
             steps {
                 echo 'Running Tests'
@@ -70,7 +61,6 @@ pipeline {
                        exclusionPattern: '/target/**,**/*Test,**/*_javassist/**'
             }
         }
-
 
         stage('SonarQube Analysis') {
             steps {
@@ -99,14 +89,13 @@ pipeline {
             }
         }
 
-         stage('Deploy to Nexus') {
-             steps {
-                 echo 'Deploying to Nexus Repository'
-                 withCredentials([usernamePassword(credentialsId: 'nexusCredentials', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
-                     sh 'mvn clean deploy -DskipTests -Dnexus.username=$NEXUS_USERNAME -Dnexus.password=$NEXUS_PASSWORD'
-                 }
-             }
-         }
-
+        stage('Deploy to Nexus') {
+            steps {
+                echo 'Deploying to Nexus Repository'
+                withCredentials([usernamePassword(credentialsId: 'nexusCredentials', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                    sh 'mvn clean deploy -DskipTests -DaltDeploymentRepository=nexus::default::${NEXUS_URL}/repository/${NEXUS_REPOSITORY}'
+                }
+            }
+        }
     }
 }
