@@ -2,7 +2,9 @@ pipeline {
     agent any
 
     environment {
-        SONAR_HOST_URL = 'http://192.168.0.10:9000'  // URL de votre serveur SonarQube
+        SONAR_HOST_URL = 'http://192.168.0.10:9000'
+        SONAR_LOGIN = 'admin'
+        SONAR_PASSWORD = 'Gharnougui123@'
     }
 
     stages {
@@ -53,30 +55,28 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'sonar-credentials', passwordVariable: 'SONAR_PASSWORD', usernameVariable: 'SONAR_LOGIN')]) {
-                    sh """
-                        mvn sonar:sonar \
-                            -Dsonar.host.url=${SONAR_HOST_URL} \
-                            -Dsonar.login=${SONAR_LOGIN} \
-                            -Dsonar.password=${SONAR_PASSWORD} \
-                            -Dsonar.exclusions="src/main/java/tn/esprit/spring/kaddem/entities/Equipe.java,\
-                            src/main/java/tn/esprit/spring/kaddem/entities/DetailEquipe.java,\
-                            src/main/java/tn/esprit/spring/kaddem/entities/Etudiant.java,\
-                            src/main/java/tn/esprit/spring/kaddem/entities/Departement.java,\
-                            src/main/java/tn/esprit/spring/kaddem/controllers/DepartementRestController.java,\
-                            src/main/java/tn/esprit/spring/kaddem/services/DepartementServiceImpl.java,\
-                            src/main/java/tn/esprit/spring/kaddem/controllers/EquipeRestController.java,\
-                            src/main/java/tn/esprit/spring/kaddem/services/EquipeServiceImpl.java,\
-                            src/main/java/tn/esprit/spring/kaddem/controllers/EtudiantRestController.java,\
-                            src/main/java/tn/esprit/spring/kaddem/services/EtudiantServiceImpl.java,\
-                            src/main/java/tn/esprit/spring/kaddem/KaddemApplication.java,\
-                            src/main/java/tn/esprit/spring/kaddem/entities/Niveau.java,\
-                            src/main/java/tn/esprit/spring/kaddem/entities/Option.java,\
-                            src/main/java/tn/esprit/spring/kaddem/entities/Universite.java,\
-                            src/main/java/tn/esprit/spring/kaddem/controllers/UniversiteRestController.java,\
-                            src/main/java/tn/esprit/spring/kaddem/services/UniversiteServiceImpl.java"
-                    """
-                }
+                sh """
+                    mvn sonar:sonar \
+                        -Dsonar.host.url=${SONAR_HOST_URL} \
+                        -Dsonar.login=${SONAR_LOGIN} \
+                        -Dsonar.password=${SONAR_PASSWORD} \
+                        -Dsonar.exclusions="src/main/java/tn/esprit/spring/kaddem/entities/Equipe.java,\
+                        src/main/java/tn/esprit/spring/kaddem/entities/DetailEquipe.java,\
+                        src/main/java/tn/esprit/spring/kaddem/entities/Etudiant.java,\
+                        src/main/java/tn/esprit/spring/kaddem/entities/Departement.java,\
+                        src/main/java/tn/esprit/spring/kaddem/controllers/DepartementRestController.java,\
+                        src/main/java/tn/esprit/spring/kaddem/services/DepartementServiceImpl.java,\
+                        src/main/java/tn/esprit/spring/kaddem/controllers/EquipeRestController.java,\
+                        src/main/java/tn/esprit/spring/kaddem/services/EquipeServiceImpl.java,\
+                        src/main/java/tn/esprit/spring/kaddem/controllers/EtudiantRestController.java,\
+                        src/main/java/tn/esprit/spring/kaddem/services/EtudiantServiceImpl.java,\
+                        src/main/java/tn/esprit/spring/kaddem/KaddemApplication.java,\
+                        src/main/java/tn/esprit/spring/kaddem/entities/Niveau.java,\
+                        src/main/java/tn/esprit/spring/kaddem/entities/Option.java,\
+                        src/main/java/tn/esprit/spring/kaddem/entities/Universite.java,\
+                        src/main/java/tn/esprit/spring/kaddem/controllers/UniversiteRestController.java,\
+                        src/main/java/tn/esprit/spring/kaddem/services/UniversiteServiceImpl.java"
+                """
             }
         }
     }
