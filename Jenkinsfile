@@ -15,6 +15,14 @@ pipeline {
         NEXUS_ARTIFACT = 'kaddem' // Nom de votre artefact
         NEXUS_VERSION = '0.0.1' // Version de l'artefact
     }
+    <servers>
+        <server>
+            <id>nexus</id>
+            <username>${env.NEXUS_USERNAME}</username>
+            <password>${env.NEXUS_PASSWORD}</password>
+        </server>
+    </servers>
+
 
     stages {
         stage('Checkout from Git') {
@@ -91,11 +99,14 @@ pipeline {
             }
         }
 
-           stage('Deploy to Nexus') {
-                   steps {
-                       echo 'Deploying to Nexus Repository'
-                       sh 'mvn clean deploy -DskipTests'
-                   }
-               }
+         stage('Deploy to Nexus') {
+             steps {
+                 echo 'Deploying to Nexus Repository'
+                 withCredentials([usernamePassword(credentialsId: 'nexusCredentials', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                     sh 'mvn clean deploy -DskipTests -Dnexus.username=$NEXUS_USERNAME -Dnexus.password=$NEXUS_PASSWORD'
+                 }
+             }
+         }
+
     }
 }
