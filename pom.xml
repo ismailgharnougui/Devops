@@ -7,14 +7,14 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.7.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
 
     <groupId>tn.esprit.spring</groupId>
     <artifactId>kaddem</artifactId>
     <version>0.0.1</version>
     <name>kaddem</name>
-    <description>kaddem</description>
+    <description>Projet Kaddem - Gestion d'université</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -68,14 +68,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
             </plugin>
 
             <!-- JaCoCo Plugin Configuration -->

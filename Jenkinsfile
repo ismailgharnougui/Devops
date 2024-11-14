@@ -41,13 +41,6 @@ pipeline {
             }
         }
 
-        stage('Generate JaCoCo Report') {
-            steps {
-                echo 'Generating JaCoCo Report'
-                // JaCoCo report should be generated during test phase automatically
-            }
-        }
-
         stage('JaCoCo Coverage Report') {
             steps {
                 echo 'Publishing JaCoCo Coverage Report'
