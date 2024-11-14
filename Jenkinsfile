@@ -9,6 +9,11 @@ pipeline {
         SONAR_HOST_URL = 'http://192.168.0.10:9000'
         SONAR_LOGIN = 'admin'
         SONAR_PASSWORD = 'Gharnougui123@'
+        NEXUS_URL = 'http://localhost:8081' // URL de votre serveur Nexus
+        NEXUS_REPOSITORY = 'maven-releases' // Repository cible dans Nexus
+        NEXUS_GROUP = 'tn.esprit.spring' // Group ID dans Nexus
+        NEXUS_ARTIFACT = 'kaddem' // Nom de votre artefact
+        NEXUS_VERSION = '0.0.1' // Version de l'artefact
     }
 
     stages {
@@ -83,27 +88,28 @@ pipeline {
                 """
             }
         }
-    }
-      stage('Nexus') {
-                steps {
-                    script {
-                        withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                            echo 'Deploying to Nexus'
-                            sh '''
-                                mvn deploy:deploy-file \
-                                    -Durl=${NEXUS_URL}/repository/${NEXUS_REPOSITORY} \
-                                    -DrepositoryId=nexus \
-                                    -DgroupId=${NEXUS_GROUP} \
-                                    -DartifactId=${NEXUS_ARTIFACT} \
-                                    -Dversion=${NEXUS_VERSION} \
-                                    -Dpackaging=jar \
-                                    -Dfile=target/${NEXUS_ARTIFACT}-${NEXUS_VERSION}.jar \
-                                    -DgeneratePom=true \
-                                    -Dusername=${NEXUS_USER} \
-                                    -Dpassword=${NEXUS_PASS}
-                            '''
-                        }
+
+        stage('Nexus') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                        echo 'Deploying to Nexus'
+                        sh """
+                            mvn deploy:deploy-file \
+                                -Durl=${NEXUS_URL}/repository/${NEXUS_REPOSITORY} \
+                                -DrepositoryId=nexus \
+                                -DgroupId=${NEXUS_GROUP} \
+                                -DartifactId=${NEXUS_ARTIFACT} \
+                                -Dversion=${NEXUS_VERSION} \
+                                -Dpackaging=jar \
+                                -Dfile=target/${NEXUS_ARTIFACT}-${NEXUS_VERSION}.jar \
+                                -DgeneratePom=true \
+                                -Dusername=${NEXUS_USER} \
+                                -Dpassword=${NEXUS_PASS}
+                        """
                     }
                 }
             }
+        }
+    }
 }
