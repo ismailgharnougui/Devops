@@ -109,40 +109,35 @@ pipeline {
                 sh 'docker compose up -d'
             }
         }
-
-        // Separate Email Notification Stage
-        stage('Email') {
-            when {
-                anyOf {
-                    success()
-                    failure()
-                    unstable()
-                }
-            }
-            steps {
-                script {
-                    def status = currentBuild.currentResult
-                    def subject = "Pipeline Notification: ${env.JOB_NAME} Build #${env.BUILD_NUMBER} - ${status}"
-                    def body = """
-                        <h3>Pipeline Notification</h3>
-                        <p><b>Project:</b> ${env.JOB_NAME}</p>
-                        <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
-                        <p><b>Status:</b> ${status}</p>
-                        <p><a href="${env.BUILD_URL}">View Build Details</a></p>
-                    """
-                    emailext(
-                        subject: subject,
-                        body: body,
-                        to: 'manarwahada177@gmail.com',
-                        replyTo: 'manarwahada177@gmail.com',
-                        mimeType: 'text/html'
-                    )
-                }
-            }
-        }
     }
 
     post {
+        success {
+            emailext(
+                subject: "Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    <h3>Build Successful</h3>
+                    <p><b>Project:</b> ${env.JOB_NAME}</p>
+                    <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
+                    <p>View Build: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                """,
+                to: 'manarwahada177@gmail.com',
+                mimeType: 'text/html'
+            )
+        }
+        failure {
+            emailext(
+                subject: "Build Failure: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    <h3>Build Failed</h3>
+                    <p><b>Project:</b> ${env.JOB_NAME}</p>
+                    <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
+                    <p>View Build: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                """,
+                to: 'manarwahada177@gmail.com',
+                mimeType: 'text/html'
+            )
+        }
         always {
             echo 'Pipeline completed. Cleaning up...'
         }
