@@ -91,24 +91,18 @@ pipeline {
 
         stage('Nexus') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                        echo 'Deploying to Nexus'
-                        sh """
-                            mvn deploy:deploy-file \
-                                -Durl=${NEXUS_URL}/repository/${NEXUS_REPOSITORY} \
-                                -DrepositoryId=nexus \
-                                -DgroupId=${NEXUS_GROUP} \
-                                -DartifactId=${NEXUS_ARTIFACT} \
-                                -Dversion=${NEXUS_VERSION} \
-                                -Dpackaging=jar \
-                                -Dfile=target/${NEXUS_ARTIFACT}-${NEXUS_VERSION}.jar \
-                                -DgeneratePom=true \
-                                -Dusername=${NEXUS_USER} \
-                                -Dpassword=${NEXUS_PASS}
-                        """
-                    }
-                }
+                echo 'Deploying to Nexus'
+                sh """
+                    mvn deploy:deploy-file \
+                        -Durl=${NEXUS_URL}/repository/${NEXUS_REPOSITORY} \
+                        -DrepositoryId=nexus \
+                        -DgroupId=${NEXUS_GROUP} \
+                        -DartifactId=${NEXUS_ARTIFACT} \
+                        -Dversion=${NEXUS_VERSION} \
+                        -Dpackaging=jar \
+                        -Dfile=target/${NEXUS_ARTIFACT}-${NEXUS_VERSION}.jar \
+                        -DgeneratePom=true
+                """
             }
         }
     }
