@@ -2,9 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SONAR_HOST_URL = 'http://192.168.0.10:9000'
-        SONAR_LOGIN = credentials('sonar-login')
-        SONAR_PASSWORD = credentials('sonar-password')
+        SONAR_HOST_URL = 'http://192.168.0.10:9000'  // URL de votre serveur SonarQube
     }
 
     stages {
@@ -46,7 +44,7 @@ pipeline {
         stage('Generate JaCoCo Report') {
             steps {
                 echo 'Generating JaCoCo Report'
-                // Si JaCoCo est déjà configuré dans le pom.xml et les tests sont exécutés, le rapport est généré automatiquement.
+                // JaCoCo report should be generated during test phase automatically
             }
         }
 
@@ -62,8 +60,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withCredentials([string(credentialsId: 'sonar-login', variable: 'SONAR_LOGIN'),
-                                 string(credentialsId: 'sonar-password', variable: 'SONAR_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'sonar-credentials', passwordVariable: 'SONAR_PASSWORD', usernameVariable: 'SONAR_LOGIN')]) {
                     sh """
                         mvn sonar:sonar \
                             -Dsonar.host.url=${SONAR_HOST_URL} \
