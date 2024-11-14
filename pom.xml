@@ -46,16 +46,15 @@
             <version>1.6.9</version>
         </dependency>
     </dependencies>
-    <!-- Deploy to Nexus -->
     <distributionManagement>
         <repository>
             <id>deploymentRepo</id>
             <name>Nexus Repository</name>
-            <url>http://localhost:8081/repository/maven-releases/</url>
+            <url>http://192.168.0.10:8081/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
 
-    
+
     <build>
         <plugins>
             <plugin>
