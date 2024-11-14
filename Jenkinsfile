@@ -47,10 +47,11 @@ pipeline {
         stage('JaCoCo Coverage Report') {
             steps {
                 echo 'Publishing JaCoCo Coverage Report'
-                jacoco execPattern: '**/target/jacoco.exec',
-                       classPattern: '**/classes',
-                       sourcePattern: '**/src',
-                       exclusionPattern: '/target/**,**/*Test,**/*_javassist/**'
+               jacoco execPattern: '**/target/jacoco.exec',
+                      classPattern: '**/classes',
+                      sourcePattern: '**/src',
+                      exclusionPattern: '/target/**,**/*Test,**/*_javassist/**'
+
             }
         }
 
