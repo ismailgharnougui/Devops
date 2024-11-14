@@ -113,30 +113,14 @@ pipeline {
 
     post {
         success {
-            emailext(
-                subject: "Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """
-                    <h3>Build Successful</h3>
-                    <p><b>Project:</b> ${env.JOB_NAME}</p>
-                    <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
-                    <p>View Build: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                """,
-                to: 'manarwahada177@gmail.com',
-                mimeType: 'text/html'
-            )
+            mail to: 'manarwahada177@gmail.com',
+                 subject: "Succès de Build : ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                 body: "Détails : ${env.BUILD_URL}"
         }
         failure {
-            emailext(
-                subject: "Build Failure: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """
-                    <h3>Build Failed</h3>
-                    <p><b>Project:</b> ${env.JOB_NAME}</p>
-                    <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
-                    <p>View Build: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                """,
-                to: 'manarwahada177@gmail.com',
-                mimeType: 'text/html'
-            )
+            mail to: 'manarwahada177@gmail.com',
+                 subject: "Échec de Build : ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                 body: "Détails : ${env.BUILD_URL}"
         }
         always {
             echo 'Pipeline completed. Cleaning up...'
