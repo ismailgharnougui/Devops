@@ -1,26 +1,26 @@
 pipeline {
     agent any
 
-     tools {
-           maven 'M2_HOME'
-       }
+    tools {
+        maven 'M2_HOME'
+    }
 
     environment {
         SONAR_HOST_URL = 'http://192.168.0.10:9000'
         SONAR_LOGIN = 'admin'
         SONAR_PASSWORD = 'Gharnougui123@'
-        NEXUS_URL = 'http://localhost:8081' // URL de votre serveur Nexus
-        NEXUS_REPOSITORY = 'maven-releases' // Repository cible dans Nexus
-        NEXUS_GROUP = 'tn.esprit.spring' // Group ID dans Nexus
-        NEXUS_ARTIFACT = 'kaddem' // Nom de votre artefact
-        NEXUS_VERSION = '0.0.1' // Version de l'artefact
+        NEXUS_URL = 'http://192.168.0.10:8081' // Updated to IP for potential network clarity
+        NEXUS_REPOSITORY = 'maven-releases'
+        NEXUS_GROUP = 'tn.esprit.spring'
+        NEXUS_ARTIFACT = 'kaddem'
+        NEXUS_VERSION = '0.0.1'
     }
 
     stages {
         stage('Checkout from Git') {
             steps {
                 echo 'Pulling from Git'
-                git branch: 'ISMAIL', url: 'https://github.com/ismailgharnougui/Devops'
+                git branch: 'ISMAIL', url: 'https://github.com/ismailgharnougui/Devops.git' // Ensured branch name consistency
             }
         }
 
@@ -45,7 +45,6 @@ pipeline {
             }
         }
 
-
         stage('Tests - JUnit/Mockito') {
             steps {
                 echo 'Running Tests'
@@ -62,7 +61,6 @@ pipeline {
                        exclusionPattern: '/target/**,**/*Test,**/*_javassist/**'
             }
         }
-
 
         stage('SonarQube Analysis') {
             steps {
@@ -91,11 +89,11 @@ pipeline {
             }
         }
 
-           stage('Deploy to Nexus') {
-                   steps {
-                       echo 'Deploying to Nexus Repository'
-                       sh 'mvn clean deploy -DskipTests'
-                   }
-               }
+        stage('Deploy to Nexus') {
+            steps {
+                echo 'Deploying to Nexus Repository'
+                sh 'mvn clean deploy -DskipTests'
+            }
+        }
     }
 }
