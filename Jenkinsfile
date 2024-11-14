@@ -20,7 +20,7 @@ pipeline {
         stage('Checkout from Git') {
             steps {
                 echo 'Pulling from Git'
-                git branch: 'Ismail', url: 'https://github.com/ismailgharnougui/Devops'
+                git branch: 'ISMAIL', url: 'https://github.com/ismailgharnougui/Devops'
             }
         }
 
