@@ -1,9 +1,9 @@
 pipeline {
     agent any
 
-    tools {
-        jdk 'jdk-17'  // Assurez-vous que ce JDK est installé dans la configuration Jenkins
-    }
+     tools {
+           maven 'M2_HOME'
+       }
 
     environment {
         SONAR_HOST_URL = 'http://192.168.0.10:9000'
@@ -89,21 +89,11 @@ pipeline {
             }
         }
 
-        stage('Nexus') {
-            steps {
-                echo 'Deploying to Nexus'
-                sh """
-                    mvn deploy:deploy-file \
-                        -Durl=${NEXUS_URL}/repository/${NEXUS_REPOSITORY} \
-                        -DrepositoryId=nexus \
-                        -DgroupId=${NEXUS_GROUP} \
-                        -DartifactId=${NEXUS_ARTIFACT} \
-                        -Dversion=${NEXUS_VERSION} \
-                        -Dpackaging=jar \
-                        -Dfile=target/${NEXUS_ARTIFACT}-${NEXUS_VERSION}.jar \
-                        -DgeneratePom=true
-                """
-            }
-        }
+           stage('Deploy to Nexus') {
+                   steps {
+                       echo 'Deploying to Nexus Repository'
+                       sh 'mvn clean deploy -DskipTests'
+                   }
+               }
     }
 }
