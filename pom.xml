@@ -75,13 +75,12 @@
                     </execution>
                     <execution>
                         <id>report</id>
-                        <phase>test</phase> <!-- On l'exécute pendant la phase de test -->
+                        <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>
-
             </plugin>
         </plugins>
     </build>
