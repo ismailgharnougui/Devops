@@ -95,5 +95,36 @@ pipeline {
                 sh 'mvn clean deploy -DskipTests'
             }
         }
+
+         stage('Build Docker Image') {
+                  steps {
+                      script {
+                          echo 'Building Docker Image'
+                          def dockerImage = docker.build("ismailelgharnougui/ismailelgharnougui:0.0.1")  // Nom d'image en minuscules et caractères valides
+                      }
+                  }
+              }
+
+              stage('Deploy Image to DockerHub') {
+                  steps {
+                      script {
+                          echo 'Logging into DockerHub and Pushing Image'
+                        //  withCredentials([usernamePassword(credentialsId: 'Docker_credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                              sh 'docker login -u ismail.elgharnougui@esprit.tn -p Gharnougui15'
+                              sh 'docker push ismailelgharnougui/ismailelgharnougui:0.0.1'  // Nom d'image en minuscules
+                          }
+                      }
+                  }
+              }
+
+              stage('Deploy with Docker Compose') {
+                  steps {
+                      script {
+                          echo 'Deploying with Docker Compose'
+                          sh 'docker-compose up -d'
+                      }
+                  }
+              }
+          }
     }
 }
