@@ -7,13 +7,16 @@ pipeline {
 
     environment {
         SONAR_HOST_URL = 'http://192.168.0.10:9000'
+        SONAR_LOGIN = 'admin'
+        SONAR_PASSWORD = 'Gharnougui123@'
         NEXUS_URL = 'http://192.168.0.10:8081'
         NEXUS_REPOSITORY = 'maven-releases'
         NEXUS_GROUP = 'tn.esprit.spring'
         NEXUS_ARTIFACT = 'kaddem'
         NEXUS_VERSION = '0.0.1'
-        DOCKER_USERNAME = credentials('DOCKER_USERNAME')  // Use Jenkins credentials store
-        DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')  // Use Jenkins credentials store
+        DOCKER_USERNAME = 'ismailgharnougui'
+        DOCKER_PASSWORD = 'Gharnougui123@'
+
     }
 
     stages {
@@ -103,28 +106,31 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Check if JAR file exists
-                    def jarExists = fileExists 'target/kaddem-0.0.1.jar'
-                    if (jarExists) {
-                        echo 'Building Docker Image'
-                        def imageTag = "ismailelgharnougui/kaddem:${env.BUILD_ID}"
-                        sh "docker build -t ${imageTag} ."
-                    } else {
-                        error 'JAR file not found in target directory. Aborting Docker build.'
-                    }
-                }
-            }
-        }
+      stage('Build Docker Image') {
+          steps {
+              script {
+                  // Liste les fichiers dans le répertoire target pour s'assurer que le JAR est là
+                  sh 'ls -l target'
+
+                  // Vérifie si le fichier JAR existe
+                  def jarExists = fileExists 'target/kaddem-0.0.1.jar'
+
+                  if (jarExists) {
+                      echo 'Building Docker Image'
+                      sh 'docker build -t ismailgharnougui/ismailgharnougui:0.0.1 .'
+                  } else {
+                      error 'JAR file not found in target directory. Aborting Docker build.'
+                  }
+              }
+          }
+      }
+
 
         stage('Deploy Image to DockerHub') {
             steps {
                 echo 'Logging into DockerHub and Pushing Image'
                 sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
-                def imageTag = "ismailelgharnougui/kaddem:${env.BUILD_ID}"
-                sh "docker push ${imageTag}"
+                sh 'docker push ismailgharnougui/ismailgharnougui:0.0.1'
             }
         }
 

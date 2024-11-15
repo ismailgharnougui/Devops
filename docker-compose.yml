@@ -15,7 +15,7 @@ services:
   app-khmiriiheb-5bi4-g1:
     depends_on:
       - mysqlDb
-    image: ismailelgharnougui/ismailelgharnougui:0.0.1  # Nouveau nom d'image en minuscules
+    image: ismailgharnougui/ismailgharnougui:0.0.1  # Nouveau nom d'image en minuscules
     restart: on-failure
     ports:
       - "8082:8082"
