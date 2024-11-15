@@ -108,7 +108,12 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    // List files in target directory to ensure JAR is there
+                    sh 'ls -l target'
+
+                    // Check if the JAR file exists (update filename if needed)
                     def jarExists = fileExists 'target/ismailelgharnougui-0.0.1.jar'
+
                     if (jarExists) {
                         echo 'Building Docker Image'
                         sh 'docker build -t ismailelgharnougui/ismailelgharnougui:0.0.1 .'
