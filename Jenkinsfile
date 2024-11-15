@@ -101,14 +101,14 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker Image'
-                sh 'docker build -t ismailelgharnougui/ismailelgharnougui:0.0.1 .'  // Direct `docker build` command
+                sh 'docker build -t ismailelgharnougui/ismailelgharnougui:0.0.1 .'
             }
         }
 
         stage('Deploy Image to DockerHub') {
             steps {
                 echo 'Logging into DockerHub and Pushing Image'
-                sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
                 sh 'docker push ismailelgharnougui/ismailelgharnougui:0.0.1'
             }
         }
@@ -118,6 +118,18 @@ pipeline {
                 echo 'Deploying with Docker Compose'
                 sh 'docker-compose up -d'
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed.'
+        }
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }
