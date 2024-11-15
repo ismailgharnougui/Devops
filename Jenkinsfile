@@ -8,6 +8,8 @@ pipeline {
     environment {
         SONAR_HOST_URL = 'http://192.168.0.10:9000'
         SONAR_LOGIN = 'admin'
+        SONAR_PASSWORD = 'Gharnougui123@'  // Add this line
+
         NEXUS_URL = 'http://192.168.0.10:8081'
         NEXUS_REPOSITORY = 'maven-releases'
         NEXUS_GROUP = 'tn.esprit.spring'
