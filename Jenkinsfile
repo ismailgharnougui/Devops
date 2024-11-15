@@ -14,8 +14,8 @@ pipeline {
         NEXUS_GROUP = 'tn.esprit.spring'
         NEXUS_ARTIFACT = 'kaddem'
         NEXUS_VERSION = '0.0.1'
-        DOCKER_USERNAME = 'ismail.elgharnougui@esprit.tn'
-        DOCKER_PASSWORD = 'Gharnougui15' // Directly using DockerHub credentials here
+        DOCKER_USERNAME = 'ismailelgharnougui'
+        DOCKER_PASSWORD = 'Gharnougui15'
     }
 
     stages {
@@ -100,29 +100,23 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    echo 'Building Docker Image'
-                    docker.build("ismailelgharnougui/ismailelgharnougui:0.0.1")
-                }
+                echo 'Building Docker Image'
+                sh 'docker build -t ismailelgharnougui/ismailelgharnougui:0.0.1 .'  // Direct `docker build` command
             }
         }
 
         stage('Deploy Image to DockerHub') {
             steps {
-                script {
-                    echo 'Logging into DockerHub and Pushing Image'
-                    sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
-                    sh 'docker push ismailelgharnougui/ismailelgharnougui:0.0.1'
-                }
+                echo 'Logging into DockerHub and Pushing Image'
+                sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                sh 'docker push ismailelgharnougui/ismailelgharnougui:0.0.1'
             }
         }
 
         stage('Deploy with Docker Compose') {
             steps {
-                script {
-                    echo 'Deploying with Docker Compose'
-                    sh 'docker-compose up -d'
-                }
+                echo 'Deploying with Docker Compose'
+                sh 'docker-compose up -d'
             }
         }
     }
