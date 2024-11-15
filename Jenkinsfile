@@ -47,6 +47,13 @@ pipeline {
             }
         }
 
+        stage('Verify Target Directory') {
+            steps {
+                echo 'Checking for JAR file in target directory'
+                sh 'ls -l target'
+            }
+        }
+
         stage('Tests - JUnit/Mockito') {
             steps {
                 echo 'Running Tests'
@@ -100,8 +107,15 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker Image'
-                sh 'docker build -t ismailelgharnougui/ismailelgharnougui:0.0.1 .'
+                script {
+                    def jarExists = fileExists 'target/ismailelgharnougui-0.0.1.jar'
+                    if (jarExists) {
+                        echo 'Building Docker Image'
+                        sh 'docker build -t ismailelgharnougui/ismailelgharnougui:0.0.1 .'
+                    } else {
+                        error 'JAR file not found in target directory. Aborting Docker build.'
+                    }
+                }
             }
         }
 
