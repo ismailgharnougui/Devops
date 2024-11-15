@@ -139,8 +139,9 @@ pipeline {
                     if ! command -v docker-compose &> /dev/null
                     then
                         echo "docker-compose could not be found, installing it"
-                        curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-                        chmod +x /usr/local/bin/docker-compose
+                        curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /tmp/docker-compose
+                        chmod +x /tmp/docker-compose
+                        mv /tmp/docker-compose /usr/local/bin/docker-compose
                     else
                         echo "docker-compose is already installed"
                     fi
