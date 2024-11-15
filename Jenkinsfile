@@ -9,18 +9,20 @@ pipeline {
         SONAR_HOST_URL = 'http://192.168.0.10:9000'
         SONAR_LOGIN = 'admin'
         SONAR_PASSWORD = 'Gharnougui123@'
-        NEXUS_URL = 'http://192.168.0.10:8081' // Updated to IP for potential network clarity
+        NEXUS_URL = 'http://192.168.0.10:8081'
         NEXUS_REPOSITORY = 'maven-releases'
         NEXUS_GROUP = 'tn.esprit.spring'
         NEXUS_ARTIFACT = 'kaddem'
         NEXUS_VERSION = '0.0.1'
+        DOCKER_USERNAME = 'ismail.elgharnougui@esprit.tn'
+        DOCKER_PASSWORD = 'Gharnougui15' // Directly using DockerHub credentials here
     }
 
     stages {
         stage('Checkout from Git') {
             steps {
                 echo 'Pulling from Git'
-                git branch: 'ISMAIL', url: 'https://github.com/ismailgharnougui/Devops.git' // Ensured branch name consistency
+                git branch: 'ISMAIL', url: 'https://github.com/ismailgharnougui/Devops.git'
             }
         }
 
@@ -96,35 +98,32 @@ pipeline {
             }
         }
 
-         stage('Build Docker Image') {
-                  steps {
-                      script {
-                          echo 'Building Docker Image'
-                          def dockerImage = docker.build("ismailelgharnougui/ismailelgharnougui:0.0.1")  // Nom d'image en minuscules et caractères valides
-                      }
-                  }
-              }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo 'Building Docker Image'
+                    docker.build("ismailelgharnougui/ismailelgharnougui:0.0.1")
+                }
+            }
+        }
 
-              stage('Deploy Image to DockerHub') {
-                  steps {
-                      script {
-                          echo 'Logging into DockerHub and Pushing Image'
-                        //  withCredentials([usernamePassword(credentialsId: 'Docker_credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                              sh 'docker login -u ismail.elgharnougui@esprit.tn -p Gharnougui15'
-                              sh 'docker push ismailelgharnougui/ismailelgharnougui:0.0.1'  // Nom d'image en minuscules
-                          }
-                      }
-                  }
-              }
+        stage('Deploy Image to DockerHub') {
+            steps {
+                script {
+                    echo 'Logging into DockerHub and Pushing Image'
+                    sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                    sh 'docker push ismailelgharnougui/ismailelgharnougui:0.0.1'
+                }
+            }
+        }
 
-              stage('Deploy with Docker Compose') {
-                  steps {
-                      script {
-                          echo 'Deploying with Docker Compose'
-                          sh 'docker-compose up -d'
-                      }
-                  }
-              }
-          }
+        stage('Deploy with Docker Compose') {
+            steps {
+                script {
+                    echo 'Deploying with Docker Compose'
+                    sh 'docker-compose up -d'
+                }
+            }
+        }
     }
 }
