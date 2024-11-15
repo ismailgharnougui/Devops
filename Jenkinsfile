@@ -8,15 +8,12 @@ pipeline {
     environment {
         SONAR_HOST_URL = 'http://192.168.0.10:9000'
         SONAR_LOGIN = 'admin'
-        SONAR_PASSWORD = 'Gharnougui123@'
         NEXUS_URL = 'http://192.168.0.10:8081'
         NEXUS_REPOSITORY = 'maven-releases'
         NEXUS_GROUP = 'tn.esprit.spring'
         NEXUS_ARTIFACT = 'kaddem'
         NEXUS_VERSION = '0.0.1'
         DOCKER_USERNAME = 'ismailgharnougui'
-        DOCKER_PASSWORD = 'Gharnougui123@'
-
     }
 
     stages {
@@ -106,25 +103,24 @@ pipeline {
             }
         }
 
-      stage('Build Docker Image') {
-          steps {
-              script {
-                  // Liste les fichiers dans le répertoire target pour s'assurer que le JAR est là
-                  sh 'ls -l target'
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Liste les fichiers dans le répertoire target pour s'assurer que le JAR est là
+                    sh 'ls -l target'
 
-                  // Vérifie si le fichier JAR existe
-                  def jarExists = fileExists 'target/kaddem-0.0.1.jar'
+                    // Vérifie si le fichier JAR existe
+                    def jarExists = fileExists 'target/kaddem-0.0.1.jar'
 
-                  if (jarExists) {
-                      echo 'Building Docker Image'
-                      sh 'docker build -t ismailgharnougui/ismailgharnougui:0.0.1 .'
-                  } else {
-                      error 'JAR file not found in target directory. Aborting Docker build.'
-                  }
-              }
-          }
-      }
-
+                    if (jarExists) {
+                        echo 'Building Docker Image'
+                        sh 'docker build -t ismailgharnougui/ismailgharnougui:0.0.1 .'
+                    } else {
+                        error 'JAR file not found in target directory. Aborting Docker build.'
+                    }
+                }
+            }
+        }
 
         stage('Deploy Image to DockerHub') {
             steps {
@@ -148,49 +144,39 @@ pipeline {
         }
         success {
             echo 'Pipeline succeeded!'
+            echo 'Sending success email...'
+            mail to: 'ismail.elgharnougui@esprit.tn',
+                 subject: "Pipeline Jenkins - Success - Build #${BUILD_NUMBER}",
+                 body: """<html>
+                            <body>
+                                <h2 style="color: #4CAF50;">ISMAIL Build ${BUILD_NUMBER}</h2>
+                                <div style="border: 2px solid #4CAF50; padding: 10px;">
+                                    <h3 style="background-color: #4CAF50; color: white; padding: 10px; text-align: center;">
+                                        Pipeline Status: SUCCESS
+                                    </h3>
+                                    <p>Check the <a href="${BUILD_URL}console">console output</a> for more details.</p>
+                                </div>
+                            </body>
+                          </html>""",
+                 mimeType: 'text/html'
         }
         failure {
             echo 'Pipeline failed.'
+            echo 'Sending failure email...'
+            mail to: 'ismail.elgharnougui@esprit.tn',
+                 subject: "Pipeline Jenkins - Failure - Build #${BUILD_NUMBER}",
+                 body: """<html>
+                            <body>
+                                <h2 style="color: #D32F2F;">ISMAIL Build ${BUILD_NUMBER}</h2>
+                                <div style="border: 2px solid #D32F2F; padding: 10px;">
+                                    <h3 style="background-color: #D32F2F; color: white; padding: 10px; text-align: center;">
+                                        Pipeline Status: FAILURE
+                                    </h3>
+                                    <p>Check the <a href="${BUILD_URL}console">console output</a> for more details.</p>
+                                </div>
+                            </body>
+                          </html>""",
+                 mimeType: 'text/html'
         }
     }
-
-     post {
-            success {
-                echo 'Sending success email...'
-                mail to: 'ismail.elgharnougui@esprit.tn',
-                     subject: "Pipeline Jenkins - Success - Build #${BUILD_NUMBER}",
-                     body: """<html>
-                                <body>
-                                    <h2 style="color: #4CAF50;">ISMAIL Build ${BUILD_NUMBER}</h2>
-                                    <div style="border: 2px solid #4CAF50; padding: 10px;">
-                                        <h3 style="background-color: #4CAF50; color: white; padding: 10px; text-align: center;">
-                                            Pipeline Status: SUCCESS
-                                        </h3>
-                                        <p>Check the <a href="${BUILD_URL}console">console output</a> for more details.</p>
-                                    </div>
-                                </body>
-                              </html>""",
-                     mimeType: 'text/html'
-            }
-            failure {
-                echo 'Sending failure email...'
-                mail to: 'ismail.elgharnougui@esprit.tn',
-                     subject: "Pipeline Jenkins - Failure - Build #${BUILD_NUMBER}",
-                     body: """<html>
-                                <body>
-                                    <h2 style="color: #D32F2F;">ISMAIL Build ${BUILD_NUMBER}</h2>
-                                    <div style="border: 2px solid #D32F2F; padding: 10px;">
-                                        <h3 style="background-color: #D32F2F; color: white; padding: 10px; text-align: center;">
-                                            Pipeline Status: FAILURE
-                                        </h3>
-                                        <p>Check the <a href="${BUILD_URL}console">console output</a> for more details.</p>
-                                    </div>
-                                </body>
-                              </html>""",
-                     mimeType: 'text/html'
-            }
-            always {
-                echo 'Pipeline completed.'
-            }
-        }
 }
