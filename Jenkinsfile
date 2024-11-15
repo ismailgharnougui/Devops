@@ -14,7 +14,7 @@ pipeline {
         NEXUS_GROUP = 'tn.esprit.spring'
         NEXUS_ARTIFACT = 'kaddem'
         NEXUS_VERSION = '0.0.1'
-        DOCKER_USERNAME = 'ismailelgharnougui'
+        DOCKER_USERNAME = 'ismail.elgharnougui@esprit.tn'
         DOCKER_PASSWORD = 'Gharnougui15'
     }
 
