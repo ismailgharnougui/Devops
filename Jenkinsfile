@@ -16,7 +16,6 @@ pipeline {
         NEXUS_VERSION = '0.0.1'
         DOCKER_USERNAME = 'ismailgharnougui'
         DOCKER_PASSWORD = 'Gharnougui123@'
-
     }
 
     stages {
@@ -106,25 +105,24 @@ pipeline {
             }
         }
 
-      stage('Build Docker Image') {
-          steps {
-              script {
-                  // Liste les fichiers dans le répertoire target pour s'assurer que le JAR est là
-                  sh 'ls -l target'
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Liste les fichiers dans le répertoire target pour s'assurer que le JAR est là
+                    sh 'ls -l target'
 
-                  // Vérifie si le fichier JAR existe
-                  def jarExists = fileExists 'target/kaddem-0.0.1.jar'
+                    // Vérifie si le fichier JAR existe
+                    def jarExists = fileExists 'target/kaddem-0.0.1.jar'
 
-                  if (jarExists) {
-                      echo 'Building Docker Image'
-                      sh 'docker build -t ismailgharnougui/ismailgharnougui:0.0.1 .'
-                  } else {
-                      error 'JAR file not found in target directory. Aborting Docker build.'
-                  }
-              }
-          }
-      }
-
+                    if (jarExists) {
+                        echo 'Building Docker Image'
+                        sh 'docker build -t ismailgharnougui/ismailgharnougui:0.0.1 .'
+                    } else {
+                        error 'JAR file not found in target directory. Aborting Docker build.'
+                    }
+                }
+            }
+        }
 
         stage('Deploy Image to DockerHub') {
             steps {
@@ -137,7 +135,17 @@ pipeline {
         stage('Deploy with Docker Compose') {
             steps {
                 echo 'Deploying with Docker Compose'
-                sh 'docker-compose up -d'
+                sh '''
+                    if ! command -v docker-compose &> /dev/null
+                    then
+                        echo "docker-compose could not be found, installing it"
+                        curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                        chmod +x /usr/local/bin/docker-compose
+                    else
+                        echo "docker-compose is already installed"
+                    fi
+                    docker-compose up -d
+                '''
             }
         }
     }
