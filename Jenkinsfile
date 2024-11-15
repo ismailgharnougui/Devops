@@ -4,18 +4,18 @@ pipeline {
     tools {
         maven 'M2_HOME'
     }
-
-    environment {
+ environment {
         SONAR_HOST_URL = 'http://192.168.0.10:9000'
         SONAR_LOGIN = 'admin'
-        SONAR_PASSWORD = 'Gharnougui123@'  // Add this line
-
+        SONAR_PASSWORD = 'Gharnougui123@'
         NEXUS_URL = 'http://192.168.0.10:8081'
         NEXUS_REPOSITORY = 'maven-releases'
         NEXUS_GROUP = 'tn.esprit.spring'
         NEXUS_ARTIFACT = 'kaddem'
         NEXUS_VERSION = '0.0.1'
         DOCKER_USERNAME = 'ismailgharnougui'
+        DOCKER_PASSWORD = 'Gharnougui123@'
+
     }
 
     stages {
