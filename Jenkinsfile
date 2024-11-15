@@ -105,24 +105,25 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // List files in target directory to ensure JAR is there
-                    sh 'ls -l target'
+      stage('Build Docker Image') {
+          steps {
+              script {
+                  // Liste les fichiers dans le répertoire target pour s'assurer que le JAR est là
+                  sh 'ls -l target'
 
-                    // Check if the JAR file exists (update filename if needed)
-                    def jarExists = fileExists 'target/ismailelgharnougui-0.0.1.jar'
+                  // Vérifie si le fichier JAR existe
+                  def jarExists = fileExists 'target/kaddem-0.0.1.jar'
 
-                    if (jarExists) {
-                        echo 'Building Docker Image'
-                        sh 'docker build -t ismailelgharnougui/ismailelgharnougui:0.0.1 .'
-                    } else {
-                        error 'JAR file not found in target directory. Aborting Docker build.'
-                    }
-                }
-            }
-        }
+                  if (jarExists) {
+                      echo 'Building Docker Image'
+                      sh 'docker build -t ismailelgharnougui/ismailelgharnougui:0.0.1 .'
+                  } else {
+                      error 'JAR file not found in target directory. Aborting Docker build.'
+                  }
+              }
+          }
+      }
+
 
         stage('Deploy Image to DockerHub') {
             steps {
